@@ -1,0 +1,4 @@
+.header-top {
+    -webkit-app-region: drag;
+    z-index: 1;
+}

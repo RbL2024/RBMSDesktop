@@ -1,0 +1,35 @@
+.cards {
+    transform: translateY(0);
+    transition: transform ease-in-out 0.2s;
+    cursor: pointer;
+}
+.cards:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 32px 64px -7px rgba(0,0,0,0.75);
+}
+@keyframes bikeMotion {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg); /* Start position */
+    }
+    25% {
+        transform: translateY(-3px) rotate(-2deg); /* Slight lift and tilt back */
+    }
+    50% {
+        transform: translateY(0) rotate(0deg); /* Return to center */
+    }
+    75% {
+        transform: translateY(3px) rotate(2deg); /* Slight drop and tilt forward */
+    }
+  
+}
+@keyframes borderRotate {
+    0% {
+        border: 3px solid #E2E2D5;
+    }
+    0% {
+        border: 3px solid #00d9ff;
+    }
+    0% {
+        border: 3px solid #E2E2D5;
+    }
+}

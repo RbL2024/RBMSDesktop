@@ -1,0 +1,25 @@
+.BAvail::-webkit-scrollbar {
+    /* width: 20px;
+    height: auto; */
+    width: 10px;
+    border-radius: 10px;
+}
+.BAvail::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.BAvail::-webkit-scrollbar-thumb {
+    background: #355E3B; /* Color of the scrollbar thumb */
+    border-radius: 10px;
+}
+.BAvail::-webkit-scrollbar-thumb:hover {
+    background: #29492e;
+}
+.bike-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.bike-item.fade-out {
+    opacity: 0;
+    transform: scale(0.9);
+}

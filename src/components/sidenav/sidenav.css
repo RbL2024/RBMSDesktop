@@ -1,0 +1,5 @@
+.nav-links.active > .nav-content  {
+    color: #355E3B;
+    background: #D6D6CA;
+    box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.1);
+}
