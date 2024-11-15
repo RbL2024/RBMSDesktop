@@ -16,6 +16,34 @@ import irish from '../../assets/images/profile/irish.png';
 import bio from '../../assets/images/profile/bio.png';
 
 export default function GpstrackingPage() {
+    useEffect(() => {
+        window.initMap = () => {
+            const mapOptions = {
+                center: { lat: 14.7317392, lng: 121.1327249 }, // Replace with your desired coordinates
+                zoom: 19,
+            };
+            const map = new window.google.maps.Map(document.getElementById('map'), mapOptions);
+
+            // Create a marker
+            const marker = new window.google.maps.Marker({
+                position: { lat: 14.7317392, lng: 121.1327249 }, // Replace with the marker's coordinates
+                map: map,
+                title: "Hello World!" // Optional title for the marker
+            });
+        };
+        
+        const loadMap = async () => {
+            try {
+                await window.api.loadGoogleMaps(); // Replace with your actual API key
+                initMap(); // Call the initMap function to create the map
+            } catch (error) {
+                console.error('Error loading Google Maps:', error);
+            }
+        };
+
+        loadMap();
+    }, []);
+
     
     return (
         <Box className="gps-tracking-container" display="flex" p={4}>
@@ -109,11 +137,11 @@ export default function GpstrackingPage() {
 
             {/* Right Section - Map & Avatars */}
             <Box className="right-section" w="70%" ml={4} p={4} bg="#E2E2D5" borderRadius="20px" mr={200}>
-                <VStack spacing={3} align="start">
+                {/* <VStack spacing={3} align="start">
                     {[edgar, naths, irish, bio].map((image, index) => (
                         <Avatar key={index} size="md" src={image} />
                     ))}
-                </VStack>
+                </VStack> */}
                 <Box className="map-container" mt={4}>
                     <div id="map" style={{ width: '100%', height: '400px' }}></div>
                 </Box>

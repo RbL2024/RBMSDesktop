@@ -33,6 +33,7 @@ module.exports = {
       name: '@electron-forge/plugin-webpack',
       config: {
         mainConfig: './webpack.main.config.js',
+        devContentSecurityPolicy: "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://maps.googleapis.com;",
         renderer: {
           config: './webpack.renderer.config.js',
           entryPoints: [
