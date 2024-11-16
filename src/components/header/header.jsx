@@ -37,7 +37,7 @@ import {
 
 import { useShared } from '../../contextAPI.jsx'
 
-import Man from '../../assets/images/dashboard/man.png'
+import Man from '../../assets/images/dashboard/profile.png'
 const minimizeMe = window.api;
 const accountHandling = window.api;
 export default function header() {
@@ -167,7 +167,7 @@ export default function header() {
                             <Text m='0' fontSize='12px' align='end'><span>{(localStorage.getItem('isSAdmin') === 'true') ? 'Super Admin' : 'Admin'}</span></Text>
                         </Box>
                         <Box className='prof d-flex align-items-center' onClick={toggleProfMenu} cursor='pointer'>
-                            <Avatar pl='2px' pt={0} size='md' src={Man} />
+                            <Avatar pl='2px' pt={0} size='md' marginTop={0} src={Man} />
                             <Icon as={MdArrowDropDown} />
                         </Box>
                         <Box className='profMenu' w='150px' h='fit-content' p='12px' bg='#E2E2D5' pos='absolute' zIndex='999' mt='10rem' shadow='lg' rounded='md' display={showProfMenu ? 'block' : 'none'}>

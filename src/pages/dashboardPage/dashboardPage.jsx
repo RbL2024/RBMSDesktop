@@ -183,6 +183,7 @@ const DashboardPage = () => {
             marginTop={-3}
             boxShadow="0px 4px 15px rgba(0, 0, 0, 0.2), inset 0px 2px 4px rgba(0, 0, 0, 0.1)" // Inner shadow
             animation="borderRotate 6s linear infinite" // Rotating border effect
+             cursor="grab"
             _hover={{
             boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.3), 0px 0px 20px rgba(0, 217, 255, 0.6)", // Glow effect on hover
              }}
