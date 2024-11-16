@@ -254,7 +254,6 @@ const DashboardPage = () => {
                         backgroundColor='#8A88B0'
                         position='absolute'
                         bottom='80' 
-                        marginBottom={5}
                         right='290px'
                         shadow='lg'
                         roundedBottomLeft='35px'

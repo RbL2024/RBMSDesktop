@@ -103,7 +103,7 @@ export default function ReservationPage() {
     const handleReturn = async (reservationId, bikeId) => {
         const data = {
             bikeId: bikeId,
-            bikeStatus: 'vacant',
+            bikeStatus: 'VACANT',
         };
 
         setLoadingId(`confirm-${reservationId}`);
@@ -188,7 +188,7 @@ export default function ReservationPage() {
                     {filteredReservations.map((reservation, index) => (
                         <Box
                             key={index}
-                            bg={backgroundColor}
+                            bg={'#E2E2D5'}
                             p={3}
                             borderRadius="lg"
                             boxShadow="md"
@@ -243,8 +243,8 @@ export default function ReservationPage() {
                                     <Text fontWeight="bold" textAlign="left">
                                         Reservation No.
                                     </Text>
-                                    <Text noOfLines={1} textOverflow="ellipsis" whiteSpace="nowrap">
-                                        {truncateText(reservation.reservation_number, 10)}
+                                    <Text >
+                                        {reservation.reservation_number}
                                     </Text>
                                 </GridItem>
                                 <GridItem>

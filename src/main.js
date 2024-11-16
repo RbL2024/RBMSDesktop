@@ -4,6 +4,9 @@ const cloudinary = require('cloudinary').v2
 const path = require('node:path');
 const { datalist } = require('framer-motion/m');
 require('dotenv').config();
+const localAPI = 'http://localhost:8917';
+const cloudAPI = 'https://rbms-backend-g216.onrender.com';
+const apiServer = localAPI;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -90,7 +93,7 @@ ipcMain.handle('fetch-data', async (event, url) => {
 
 ipcMain.handle('load-admin', async (event, myID) => {
   try {
-    const loaded = await axios.get(`https://rbms-backend-g216.onrender.com/loggedInAcc/${myID}`);
+    const loaded = await axios.get(`${apiServer}/loggedInAcc/${myID}`);
     return loaded.data;
   } catch (error) {
     console.error('Error loading admin:', error);
@@ -99,7 +102,7 @@ ipcMain.handle('load-admin', async (event, myID) => {
 
 ipcMain.handle('update-account', async (event, myID, data) => {
   try {
-    const updated = await axios.put(`https://rbms-backend-g216.onrender.com/updateAccount/${myID}`, data);
+    const updated = await axios.put(`${apiServer}/updateAccount/${myID}`, data);
     return updated.data;
   } catch (error) {
     console.error('Error updating account:', error);
@@ -107,7 +110,7 @@ ipcMain.handle('update-account', async (event, myID, data) => {
 })
 ipcMain.handle('update-pass', async (event, myID, data) => {
   try {
-    const updated = await axios.put(`https://rbms-backend-g216.onrender.com/updatePassword/${myID}`, data);
+    const updated = await axios.put(`${apiServer}/updatePassword/${myID}`, data);
     return updated.data;
   } catch (error) {
     console.error('Error updating password:', error);
@@ -117,7 +120,7 @@ ipcMain.handle('update-pass', async (event, myID, data) => {
 ipcMain.handle('find-account', async (event, data) => {
   try {
     // const searchAcc = await axios.post('http://localhost:8917/findAccount', data);
-    const searchAcc = await axios.post('https://rbms-backend-g216.onrender.com/findAccount', data);
+    const searchAcc = await axios.post(`${apiServer}/findAccount`, data);
     if (searchAcc.data.isFound) {
       event.sender.send('account-found', {
         found: true,
@@ -152,8 +155,8 @@ ipcMain.handle('upload-bike', async (event, data) => {
         i_bike_image_url: result.secure_url
       }
       // console.log(uploadData);
-      const uploadBike = await axios.post('https://rbms-backend-g216.onrender.com/uploadBikeInfo', uploadData);
-      // const uploadBike = await axios.post('https://rbms-backend-g216.onrender.com/uploadBikeInfo', uploadData);
+      const uploadBike = await axios.post(`${apiServer}/uploadBikeInfo`, uploadData);
+      // const uploadBike = await axios.post('${apiServer}/uploadBikeInfo', uploadData);
       if (uploadBike.data.isUploaded) {
         event.sender.send('bike-uploaded', {
           uploaded: true
@@ -172,7 +175,7 @@ ipcMain.handle('upload-bike', async (event, data) => {
 
 ipcMain.handle('fetch-allbikes', async (event, data) => {
   try {
-    const response = await axios.get('https://rbms-backend-g216.onrender.com/fetchAllBikes')
+    const response = await axios.get(`${apiServer}/fetchAllBikes`)
     return response.data
   } catch (error) {
     console.error('Error fetching all bikes:', error);
@@ -181,7 +184,7 @@ ipcMain.handle('fetch-allbikes', async (event, data) => {
 
 ipcMain.handle('send-otpmail', async (event, data) => {
   try {
-    const response = await axios.post('https://rbms-backend-g216.onrender.com/sendEmailOTP', data);
+    const response = await axios.post(`${apiServer}/sendEmailOTP`, data);
     return response.data
   } catch (error) {
     console.error('Error sending otp mail:', error);
@@ -191,7 +194,7 @@ ipcMain.handle('send-otpmail', async (event, data) => {
 ipcMain.handle('check-duplicates', async (event, data) => {
   try {
     // console.log(data)
-    const findAcc = await axios.post('https://rbms-backend-g216.onrender.com/findDuplication', data);
+    const findAcc = await axios.post(`${apiServer}/findDuplication`, data);
     return findAcc.data;
 
   } catch (error) {
@@ -200,7 +203,7 @@ ipcMain.handle('check-duplicates', async (event, data) => {
 })
 ipcMain.handle('create-admin', async (event, data) => {
   try {
-    const createAdmin = await axios.post('https://rbms-backend-g216.onrender.com/createAccount', data);
+    const createAdmin = await axios.post(`${apiServer}/createAccount`, data);
     return createAdmin.data;
   } catch (error) {
     console.error('Error creating admin account:', error);
@@ -208,8 +211,8 @@ ipcMain.handle('create-admin', async (event, data) => {
 })
 ipcMain.handle('sendEmail-Admin', async (event, data) => {
   try {
-    const emailSent = await axios.post('https://rbms-backend-g216.onrender.com/sendEmailACC', data);
-    console.log(emailSent)
+    const emailSent = await axios.post(`${apiServer}/sendEmailACC`, data);
+    // console.log(emailSent)
     return { success: true }
   } catch (error) {
     console.error('Error sending email to admin:', error);
@@ -218,7 +221,7 @@ ipcMain.handle('sendEmail-Admin', async (event, data) => {
 
 ipcMain.handle('get-reservations', async (event, data) => {
   try {
-    const getReservations = await axios.get('https://rbms-backend-g216.onrender.com/getReservations');
+    const getReservations = await axios.get(`${apiServer}/getReservations`);
     return getReservations.data;
   } catch (error) {
     console.error('Error fetching reservations:', error);
@@ -226,7 +229,7 @@ ipcMain.handle('get-reservations', async (event, data) => {
 })
 ipcMain.handle('get-reservations-all', async (event, data) => {
   try {
-    const getReservations = await axios.get('https://rbms-backend-g216.onrender.com/getReservationsALL');
+    const getReservations = await axios.get('${apiServer}/getReservationsALL');
     return getReservations.data;
   } catch (error) {
     console.error('Error fetching reservations:', error);
@@ -234,7 +237,7 @@ ipcMain.handle('get-reservations-all', async (event, data) => {
 })
 ipcMain.handle('get-reservations-five', async (event, data) => {
   try {
-    const getReservations = await axios.get('https://rbms-backend-g216.onrender.com/getReservationsFIVE');
+    const getReservations = await axios.get(`${apiServer}/getReservationsFIVE`);
     return getReservations.data;
   } catch (error) {
     console.error('Error fetching reservations:', error);
@@ -243,8 +246,8 @@ ipcMain.handle('get-reservations-five', async (event, data) => {
 
 ipcMain.handle('status-to-rent', async (event, reservationId, data) => {
   try {
-    const response = await axios.put(`http://localhost:8917/updateBikeStatus/${reservationId}`, data)
-    console.log(response);  
+    const response = await axios.put(`${apiServer}/updateBikeStatus/${reservationId}`, data)
+    // console.log(response);  
     return response.data;
   } catch (error) {
     console.error('Error updating reservation:', error);
@@ -252,12 +255,18 @@ ipcMain.handle('status-to-rent', async (event, reservationId, data) => {
 })
 ipcMain.handle('status-to-vacant', async (event, reservationId, data) => {
   try {
-    const response = await axios.put(`http://localhost:8917/updateBikeStatusToVacant/${reservationId}`, data)
-    console.log(response);  
+    const response = await axios.put(`${apiServer}/updateBikeStatusToVacant/${reservationId}`, data)
+    // console.log(response);  
     return response.data;
   } catch (error) {
     console.error('Error updating reservation:', error);
   }
 })
-
+ipcMain.handle('delete-bike', async (event, bikeId) => {
+  try {
+    const response = await axios.delete(`${apiServer}/deleteBike/${bikeId}`)
+  } catch (error) {
+    
+  }
+})
 

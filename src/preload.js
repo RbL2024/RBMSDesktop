@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld("api", {
   getReservationsFIVE: () => ipcRenderer.invoke("get-reservations-five"),
   updateToRent: (reservationId, data) => ipcRenderer.invoke("status-to-rent", reservationId, data),
   updateToVacant: (reservationId, data) => ipcRenderer.invoke("status-to-vacant", reservationId, data),
+  deleteBike: (bikeId) => ipcRenderer.invoke('delete-bike', bikeId), 
   loadGoogleMaps: () => {
     return new Promise((resolve, reject) => {
       const script = document.createElement("script");

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './availabilityPage.css';
 import { Box, Text, Grid, GridItem, IconButton } from '@chakra-ui/react';
 import {
@@ -17,21 +17,28 @@ export default function AvailablityPage() {
     const inputRef = useRef(null);
     const [fetchedBikes, setFetchedBikes] = useState([]);
     const [bikeToRemove, setBikeToRemove] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleSearch = () => {
         const inputValue = 'BID-' + inputRef.current.value;
         console.log(inputValue);
     };
 
-    const fetchBikes = async () => {
+    const fetchBikes = useCallback(async () => {
+        setLoading(true);
+        setError(null);
         try {
             const res = await fetchAllbikes.fetchBikes('fetch-bikes');
             setFetchedBikes(res);
-            console.log(res);
+            // console.log(res);
         } catch (error) {
             console.error(error);
+            setError('Failed to fetch bikes. Please try again later.');
+        } finally {
+            setLoading(false);
         }
-    };
+    }, []);
 
     const handleRemoveBike = async (bikeId) => {
         setBikeToRemove(bikeId); // Set the bike to be removed
@@ -53,12 +60,10 @@ export default function AvailablityPage() {
 
     useEffect(() => {
         fetchBikes();
-        const intervalId = setInterval(() => {
-            fetchBikes(); // Fetch data every 5 seconds
-        }, 5000);
+        const intervalId = setInterval(fetchBikes, 5000); // Fetch data every 5 seconds
 
-        return () => clearInterval(intervalId);
-    }, []);
+        return () => clearInterval(intervalId); // Cleanup interval on unmount
+    }, [fetchBikes]);
 
     return (
         <Box>
@@ -114,6 +119,19 @@ export default function AvailablityPage() {
                             pos='relative'
                             className={`bike-item ${bikeToRemove === bike.bike_id ? 'fade-out' : ''}`}
                         >
+                            <Box position='absolute' top='0' left='0' right='0' bottom='0' zIndex='0'>
+                                <img
+                                    src={bike.bike_image_url} // Assuming bike.imageUrl contains the URL of the image
+                                    alt={`Bike ${bike.bike_id}`}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'fill',
+                                        opacity: '0.5', // Adjust opacity as needed
+                                        borderRadius: '12px', // Match the rounded corners
+                                    }}
+                                />
+                            </Box>
                             <Box display='flex' justifyContent='space-between' alignItems='center'>
                                 <Text textAlign='center' m='0'>{bike.bike_id}</Text>
                                 <IconButton
@@ -125,7 +143,7 @@ export default function AvailablityPage() {
                                     onClick={() => handleRemoveBike(bike.bike_id)}
                                 />
                             </Box>
-                            {bike.bike_status === 'rented' ? (
+                            {bike.bike_status === 'RENTED' ? (
                                 <Box pos='relative' mt='25%'>
                                     <Box w='100%' h='30px' bg='#F8C8DC' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
                                         <Text m={0}>Rented</Text>
@@ -136,13 +154,13 @@ export default function AvailablityPage() {
                                         <Box boxSize='20px' bg='#4396BD' rounded='md' />
                                     </Box>
                                 </Box>
-                            ) : bike.bike_status === 'reserved' ? (
+                            ) : bike.bike_status === 'RESERVED' ? (
                                 <Box pos='relative' mt='50%'>
                                     <Box w='100%' h='30px' bg='#f9f871' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
                                         <Text m={0} width='100%' textAlign='center'>RESERVED</Text>
                                     </Box>
                                 </Box>
-                            ) : bike.bike_status === 'vacant' ? (
+                            ) : bike.bike_status === 'VACANT' ? (
                                 <Box pos='relative' mt='50%'>
                                     <Box w='100%' h='30px' bg='#939393' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
                                         <Text m={0} width='100%' textAlign='center'>VACANT</Text>
