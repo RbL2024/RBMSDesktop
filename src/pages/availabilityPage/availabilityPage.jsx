@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useDisclosure } from '@chakra-ui/react';
 import './availabilityPage.css';
-import { Box, Text, Grid, GridItem, IconButton } from '@chakra-ui/react';
+import { Box, Text, Grid, GridItem, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useToast } from '@chakra-ui/react';
 import {
     FormControl,
     InputGroup,
@@ -11,27 +12,29 @@ import {
 import { FiSearch } from "react-icons/fi";
 import { CloseIcon } from '@chakra-ui/icons';
 
-const fetchAllbikes = window.api;
-
 export default function AvailablityPage() {
     const inputRef = useRef(null);
     const [fetchedBikes, setFetchedBikes] = useState([]);
-    const [bikeToRemove, setBikeToRemove] = useState(null);
+    const [bikeIdToDelete, setBikeIdToDelete] = useState(null);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [superadmin, setSuperadmin] = useState('');
+    const toast = useToast();
 
-    const handleSearch = () => {
-        const inputValue = 'BID-' + inputRef.current.value;
+    const handleSearch = useCallback(() => {
+        const inputValue = 'BID-' + inputRef.current.value.trim();
         console.log(inputValue);
-    };
+        // Implement search logic here
+    }, []);
 
     const fetchBikes = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetchAllbikes.fetchBikes('fetch-bikes');
+            const res = await window.api.fetchBikes();
             setFetchedBikes(res);
-            // console.log(res);
         } catch (error) {
             console.error(error);
             setError('Failed to fetch bikes. Please try again later.');
@@ -41,21 +44,29 @@ export default function AvailablityPage() {
     }, []);
 
     const handleRemoveBike = async (bikeId) => {
-        setBikeToRemove(bikeId); // Set the bike to be removed
-        setTimeout(async () => {
-            try {
-                const response = await fetchAllbikes.deleteBike('delete-bike', bikeId);
-                if (response.success) {
-                    setFetchedBikes((prevBikes) => prevBikes.filter((bike) => bike.bike_id !== bikeId));
-                } else {
-                    console.error('Failed to delete bike:', response.message);
-                }
-            } catch (error) {
-                console.error('Error deleting bike:', error);
-            } finally {
-                setBikeToRemove(null); // Reset the bike to remove after deletion
+        // const data = { bikeId };
+        try {
+            const response = await window.api.deleteBike(bikeId);
+            if (response.success) {
+                onSuccessOpen(); // Open the success modal
+                setFetchedBikes((prevBikes) => prevBikes.filter(bike => bike.bike_id !== bikeId)); // Remove bike from state
+            } else {
+                console.error('Failed to delete bike:', response.message);
+                setError('Failed to delete bike. Please try again.');
             }
-        }, 300); // Delay to allow the fade-out animation
+        } catch (error) {
+            console.error('Error deleting bike:', error);
+            setError('Error deleting bike. Please try again.');
+        } finally {
+            setBikeIdToDelete(null);
+        }
+    };
+
+    const confirmDeleteBike = () => {
+        if (bikeIdToDelete) {
+            handleRemoveBike(bikeIdToDelete);
+        }
+        onClose(); // Close the modal
     };
 
     useEffect(() => {
@@ -65,6 +76,20 @@ export default function AvailablityPage() {
         return () => clearInterval(intervalId); // Cleanup interval on unmount
     }, [fetchBikes]);
 
+    useEffect(() => {
+        setSuperadmin(localStorage.getItem('isSAdmin'));
+    }, []);
+
+    const handleUnauthorized = () => {
+        toast({
+            title: 'Unauthorized',
+            description: 'You do not have permission to view this page.',
+            status: 'warning',
+            duration: 3000,
+            position: 'top',
+            isClosable: true,
+        });
+    };
     return (
         <Box>
             <Box className='legends' display='flex' justifyContent='space-between' w='950px' position='relative'>
@@ -106,18 +131,18 @@ export default function AvailablityPage() {
                 </Box>
             </Box>
             <Box mt='10px' w='950px' h='575px' rounded='2xl' shadow='lg' padding='20px' bg='#E2E2D5' overflowY='auto' className='BAvail'>
-                <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+                <Grid templateColumns='repeat(4, 1fr)' gap={'30px'}>
                     {fetchedBikes.map((bike) => (
                         <GridItem
                             key={bike.bike_id}
-                            w='150px'
+                            w='175px'
                             h='150px'
                             bg='#FFFFFF'
                             rounded='2xl'
                             shadow='lg'
                             p='10px'
                             pos='relative'
-                            className={`bike-item ${bikeToRemove === bike.bike_id ? 'fade-out' : ''}`}
+                        // className={`bike-item ${bikeIdToDelete === bike.bike_id ? 'fade-out' : 'fade-in'}`}
                         >
                             <Box position='absolute' top='0' left='0' right='0' bottom='0' zIndex='0'>
                                 <img
@@ -140,7 +165,15 @@ export default function AvailablityPage() {
                                     size='sm'
                                     variant='ghost'
                                     colorScheme='red'
-                                    onClick={() => handleRemoveBike(bike.bike_id)}
+                                    onClick={() => {
+                                        if (superadmin === 'true') {
+                                            setBikeIdToDelete(bike.bike_id); // Set bike ID to delete
+                                            onOpen();
+                                        } else {
+                                            handleUnauthorized();
+                                        }
+                                        
+                                    }}
                                 />
                             </Box>
                             {bike.bike_status === 'RENTED' ? (
@@ -150,18 +183,18 @@ export default function AvailablityPage() {
                                         <Box boxSize='20px' bg='#E37383' rounded='md' />
                                     </Box>
                                     <Box w='100%' h='30px' bg='#A7C7E7' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px'>
-                                        <Text m={0}>User</Text>
+                                        <Text m={0}>{bike.customerInfo.c_username}</Text>
                                         <Box boxSize='20px' bg='#4396BD' rounded='md' />
                                     </Box>
                                 </Box>
                             ) : bike.bike_status === 'RESERVED' ? (
-                                <Box pos='relative' mt='50%'>
+                                <Box pos='relative' mt='46%'>
                                     <Box w='100%' h='30px' bg='#f9f871' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
                                         <Text m={0} width='100%' textAlign='center'>RESERVED</Text>
                                     </Box>
                                 </Box>
                             ) : bike.bike_status === 'VACANT' ? (
-                                <Box pos='relative' mt='50%'>
+                                <Box pos='relative' mt='46%'>
                                     <Box w='100%' h='30px' bg='#939393' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
                                         <Text m={0} width='100%' textAlign='center'>VACANT</Text>
                                     </Box>
@@ -174,6 +207,37 @@ export default function AvailablityPage() {
                         </GridItem>
                     ))}
                 </Grid>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader>Confirm Deletion</ModalHeader>
+                        <ModalBody>
+                            <Text>Are you sure you want to delete this bike?</Text>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button colorScheme='blue' mr={3} onClick={onClose}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme='red' onClick={confirmDeleteBike}>
+                                Delete
+                            </Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
+                <Modal isOpen={isSuccessOpen} onClose={onSuccessClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader>Success</ModalHeader>
+                        <ModalBody>
+                            <Text>The bike has been successfully removed.</Text>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button colorScheme='blue' onClick={onSuccessClose}>
+                                Close
+                            </Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
             </Box>
         </Box>
     );

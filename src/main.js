@@ -229,7 +229,7 @@ ipcMain.handle('get-reservations', async (event, data) => {
 })
 ipcMain.handle('get-reservations-all', async (event, data) => {
   try {
-    const getReservations = await axios.get('${apiServer}/getReservationsALL');
+    const getReservations = await axios.get(`${apiServer}/getReservationsALL`);
     return getReservations.data;
   } catch (error) {
     console.error('Error fetching reservations:', error);
@@ -265,8 +265,17 @@ ipcMain.handle('status-to-vacant', async (event, reservationId, data) => {
 ipcMain.handle('delete-bike', async (event, bikeId) => {
   try {
     const response = await axios.delete(`${apiServer}/deleteBike/${bikeId}`)
+    return response.data;
   } catch (error) {
-    
+    console.error('Error deleting bike:', error);
+  }
+})
+ipcMain.handle('get-data-analytics', async (event, data) => {
+  try {
+    const response = await axios.get(`${apiServer}/getAnalyticsData`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching analytics data:', error);
   }
 })
 

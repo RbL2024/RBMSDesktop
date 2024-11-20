@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld("api", {
   updateToRent: (reservationId, data) => ipcRenderer.invoke("status-to-rent", reservationId, data),
   updateToVacant: (reservationId, data) => ipcRenderer.invoke("status-to-vacant", reservationId, data),
   deleteBike: (bikeId) => ipcRenderer.invoke('delete-bike', bikeId), 
+  getDataAnalytics:()=>ipcRenderer.invoke("get-data-analytics"),
   loadGoogleMaps: () => {
     return new Promise((resolve, reject) => {
       const script = document.createElement("script");

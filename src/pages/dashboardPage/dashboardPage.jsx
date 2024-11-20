@@ -89,7 +89,7 @@ const DashboardPage = () => {
     const handleUnauthorized = () => {
         toast({
             title: 'Unauthorized',
-            description: 'You do not have permission to view this page.',
+            description: 'You do not have permission to delete this bike.',
             status: 'warning',
             duration: 3000,
             position: 'top',
@@ -253,13 +253,13 @@ const DashboardPage = () => {
                         h='40px'
                         backgroundColor='#8A88B0'
                         position='absolute'
-                        bottom='80' 
+                        bottom='340px' 
                         right='290px'
                         shadow='lg'
                         roundedBottomLeft='35px'
                         roundedTopRight='20px'
                         cursor="pointer"
-                        onClick={() => handleCardClick('Analytics')}
+                        onClick={(superadmin === 'true') ? () => handleCardClick('Analytics') : () => handleUnauthorized()}
                     >
                         <Box as='span' fontSize='sm'>View Details</Box>
                     </Center>

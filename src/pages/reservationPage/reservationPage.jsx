@@ -78,10 +78,75 @@ export default function ReservationPage() {
             });
     };
 
-    const handleConfirm = async (reservationId, bikeId) => {
+    const convertTimeToSeconds = (timeString, additionalHours) => {
+        // Extract the AM/PM part and remove it from the time string
+    const [time, modifier] = timeString.split(' ');
+    
+    // Split the time string into hours, minutes, and seconds
+    let [hours, minutes] = time.split(':').map(Number);
+
+    // Convert to 24-hour format
+    if (modifier === 'PM' && hours < 12) {
+        hours += 12; // Convert PM hours
+    } else if (modifier === 'AM' && hours === 12) {
+        hours = 0; // Convert 12 AM to 0 hours
+    }
+
+    // Calculate total seconds from the original time
+    const totalSeconds = (hours * 3600) + (minutes * 60);
+
+    // Add the additional hours converted to seconds
+    const additionalSeconds = additionalHours * 3600;
+
+    // Return the total time in seconds
+    return totalSeconds + additionalSeconds;
+    }
+
+    function convertSecondsToTimeWithAMPM(totalSeconds) {
+        // Calculate hours, minutes, and seconds
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+    
+        // Determine AM/PM and convert to 12-hour format
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const hourIn12Format = hours % 12 || 12; // Convert hour to 12-hour format
+    
+        // Format minutes and seconds to always be two digits
+        const formattedMinutes = String(minutes).padStart(2, '0');
+    
+        // Construct the time string
+        return `${hourIn12Format}:${formattedMinutes} ${ampm}`;
+    }
+    function getCurrentTimeInAMPM() {
+        const now = new Date(); // Get the current date and time
+    
+        // Extract hours, minutes, and seconds
+        let hours = now.getHours();
+        const minutes = now.getMinutes();
+    
+        // Determine AM/PM
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+    
+        // Convert to 12-hour format
+        hours = hours % 12; // Convert to 12-hour format
+        hours = hours ? hours : 12; // The hour '0' should be '12'
+    
+        // Format minutes to always be two digits
+        const formattedMinutes = String(minutes).padStart(2, '0');
+    
+        // Construct the time string
+        return `${hours}:${formattedMinutes} ${ampm}`;
+    }
+
+    const handleConfirm = async (reservationId, bikeId, dou) => {
+        const getcurrentTime = getCurrentTimeInAMPM()
+        const tor = convertSecondsToTimeWithAMPM(convertTimeToSeconds(getcurrentTime, dou));   
+        // console.log(tor);
+
         const data = {
             bikeId: bikeId,
             bikeStatus: 'RENTED',
+            returnTime: tor
         };
 
         setLoadingId(`confirm-${reservationId}`);
@@ -100,6 +165,7 @@ export default function ReservationPage() {
             setLoadingId(null);
         }
     };
+
     const handleReturn = async (reservationId, bikeId) => {
         const data = {
             bikeId: bikeId,
@@ -228,7 +294,7 @@ export default function ReservationPage() {
                                     }
                                 >
                                     {reservation.bikeStatus === 'RENTED'
-                                        ? 'RENTED'
+                                        ? `RENTED, should returned by  ${reservation.returnTime}`
                                         : reservation.bikeStatus === 'CANCELED'
                                             ? 'CANCELED'
                                             : reservation.bikeStatus === 'COMPLETE'
@@ -289,7 +355,7 @@ export default function ReservationPage() {
                                 </GridItem>
                                 <GridItem>
                                     <Text fontWeight="bold" textAlign="left">
-                                        Reserved Hr
+                                        Time of use
                                     </Text>
                                     <Text noOfLines={1} textOverflow="ellipsis" whiteSpace="nowrap">
                                         {reservation.timeofuse}
@@ -353,7 +419,7 @@ export default function ReservationPage() {
                                         backgroundColor="#20c997"
                                         size="sm"
                                         borderRadius={12}
-                                        onClick={() => handleConfirm(reservation._id, reservation.bike_id)}
+                                        onClick={() => handleConfirm(reservation._id, reservation.bike_id, reservation.duration)}
                                         isLoading={loadingId === `confirm-${reservation._id}`}
                                         loadingText="Confirming..."
                                         disabled={reservation.bikeStatus === 'RENTED' || reservation.bikeStatus === 'CANCELED'}

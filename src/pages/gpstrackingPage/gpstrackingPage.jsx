@@ -173,7 +173,7 @@ useEffect(() => {
             <VStack className="left-section" p={4} mb={10} borderRadius="20px" w={{ base: "100%", lg: "30%" }} align="start" spacing={2} backgroundColor='#E2E2D5' maxHeight="70%" height={120}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" w="100%">
                     <Text fontSize="25px" fontWeight="bold">#014</Text>
-                    <IconButton icon={<FaTimes />} variant="ghost" aria-label="Close" mt={-6} borderRadius="full" border="2px solid" fontSize={15} color='#4C4C4C' />
+                  
                 </Box>
                 <Text fontSize="sm" color="#4C4C4C" mt={-5}>11/14/2024, 12:24 AM</Text>
                 <HStack mt={2} w="100%">

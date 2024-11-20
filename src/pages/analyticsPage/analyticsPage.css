@@ -5,3 +5,32 @@ body {
     max-width: 1200px;
     margin: auto;
 }
+
+/* Align weekdays and days in the same column */
+.custom-calendar .react-calendar__month-view__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* Seven columns for Sunday-Saturday */
+    text-align: center;
+    font-weight: bold;
+    margin-top: -10px;
+  }
+  
+  .custom-calendar .react-calendar__month-view__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* Align days in the same columns */
+  }
+  
+  .custom-calendar .react-calendar__tile {
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .custom-calendar .react-calendar__month-view__weekdays__weekday {
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  /* Optional: Add spacing between headers and days */
+  .custom-calendar .react-calendar__month-view__weekdays {
+    margin-bottom: 5px;
+  }
