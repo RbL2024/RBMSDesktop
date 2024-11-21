@@ -299,7 +299,7 @@ export default function AnalyticsPage() {
                                 stroke="#32BE9B"
                                 strokeWidth={2}
                                 activeDot={{ r: 6 }}
-                                dot={false}
+                                dot={true}
                             />
                             <Line
                                 type="monotone"
@@ -307,7 +307,7 @@ export default function AnalyticsPage() {
                                 stroke="#50C878"
                                 strokeWidth={2}
                                 activeDot={{ r: 6 }}
-                                dot={false}
+                                dot={true}
                             />
                         </LineChart>
                     </ResponsiveContainer>
