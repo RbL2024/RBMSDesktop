@@ -1,11 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, Grid, GridItem, CircularProgress, useBreakpointValue } from "@chakra-ui/react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Box, Text, Grid, GridItem, useBreakpointValue, Select } from "@chakra-ui/react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 export default function AnalyticsPage() {
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [adultBicycleSales, setAdultBicycleSales] = useState(0);
     const [kidBicycleSales, setKidBicycleSales] = useState(0);
+    const [reservationFee, setReservationFee] = useState(0);
+    const [selectedMonth, setSelectedMonth] = useState("All Months");
+
+    const monthlyReservationFee = {
+        "Jan": 300,
+        "Feb": 200,
+        "Mar": 600,
+        "Apr": 700,
+        "May": 500,
+        "Jun": 800,
+        "Jul": 600,
+        "Aug": 400,
+        "Sep": 300,
+        "Oct": 800,
+        "Nov": 300,
+        "Dec": 700
+    };
 
     const truncateMonth = (month) => {
         const monthMap = {
@@ -28,16 +46,16 @@ export default function AnalyticsPage() {
     useEffect(() => {
         // Example monthly sales data for adult and kid bicycles
         const monthlyData = [
-            { month: "January", adultSales: 100, kidSales: 50 },
+            { month: "January", adultSales: 400, kidSales: 300 },
             { month: "February", adultSales: 200, kidSales: 150 },
             { month: "March", adultSales: 300, kidSales: 50 },
             { month: "April", adultSales: 400, kidSales: 300 },
-            { month: "May", adultSales: 500, kidSales: 400 },
+            { month: "May", adultSales: 400, kidSales: 400 },
             { month: "June", adultSales: 600, kidSales: 500 },
             { month: "July", adultSales: 700, kidSales: 600 },
             { month: "August", adultSales: 800, kidSales: 700 },
             { month: "September", adultSales: 900, kidSales: 800 },
-            { month: "October", adultSales: 1000, kidSales: 900 },
+            { month: "October", adultSales: 2000, kidSales: 900 },
             { month: "November", adultSales: 100, kidSales: 50 },
             { month: "December", adultSales: 1200, kidSales: 1100 },
         ];
@@ -49,28 +67,86 @@ export default function AnalyticsPage() {
         }));
 
         setData(truncatedData);
+        setFilteredData(truncatedData); // Initially show all months
 
-        // Calculate total adult and kid bicycle sales
-        const totalAdultSales = truncatedData.reduce((acc, item) => acc + item.adultSales, 0);
-        setAdultBicycleSales(totalAdultSales);
-
-        const totalKidSales = truncatedData.reduce((acc, item) => acc + item.kidSales, 0);
-        setKidBicycleSales(totalKidSales);
+        // Set reservation fee for "All Months"
+       
+        
     }, []);
 
-    // Combine total adult and kid bicycle sales
-    const totalSales = adultBicycleSales + kidBicycleSales;
+    useEffect(() => {
+        if (selectedMonth === "All Months") {
+            setFilteredData(data);
+    
+            // Recalculate total sales for all months
+            const totalAdultSales = data.reduce((acc, item) => acc + item.adultSales, 0);
+            setAdultBicycleSales(totalAdultSales);
+    
+            const totalKidSales = data.reduce((acc, item) => acc + item.kidSales, 0);
+            setKidBicycleSales(totalKidSales);
+    
+            // Calculate total reservation fee for all months
+            const totalReservationFee = Object.values(monthlyReservationFee).reduce((acc, value) => acc + value, 0);
+            setReservationFee(totalReservationFee); // Set total reservation fee
+        } else {
+            const filtered = data.filter((item) => item.month === selectedMonth);
+    
+            setFilteredData(filtered);
+    
+            // Update total sales for the selected month
+            const totalAdultSales = filtered.reduce((acc, item) => acc + item.adultSales, 0);
+            setAdultBicycleSales(totalAdultSales);
+    
+            const totalKidSales = filtered.reduce((acc, item) => acc + item.kidSales, 0);
+            setKidBicycleSales(totalKidSales);
+    
+            // Set reservation fee for the selected month from the `monthlyReservationFee` object
+            setReservationFee(monthlyReservationFee[selectedMonth]);
+        }
+    }, [selectedMonth, data]);
+    
 
-    // Set a maximum sales value (you can adjust this based on your needs)
-    const maxSales = 30000; // This could be a static value or dynamic based on your data
+    // Combine total adult and kid bicycle sales into rental sales
+    const rentalSales = adultBicycleSales + kidBicycleSales;
 
-    // Calculate progress percentage
-    const salesProgress = Math.min((totalSales / maxSales) * 100, 100);
+    // Pie chart data for Reservation Fee and Rental Sales
+    const pieData = [
+        { name: "Reservation Fee", value: reservationFee },
+        { name: "Rental Sales", value: rentalSales },
+    ];
 
     const isMobile = useBreakpointValue({ base: true, md: false });
 
     return (
-        <Box p={4} bg="#E2E2D5" borderRadius="md" boxShadow="lg" width="100%">
+        <Box p={4} bg="#E2E2D5" borderRadius="15px" boxShadow="lg" width="100%">
+            {/* Dropdown to select month */}
+            <Box mb={4}>
+                <Text fontSize="lg" fontWeight="bold" color="#4A6274" mb={2}>
+                    Filter by Month
+                </Text>
+                <Select
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    bg="white"
+                    borderRadius="md"
+                    width="200px"
+                >
+                    <option value="All Months">All Months</option>
+                    <option value="Jan">January</option>
+                    <option value="Feb">February</option>
+                    <option value="Mar">March</option>
+                    <option value="Apr">April</option>
+                    <option value="May">May</option>
+                    <option value="Jun">June</option>
+                    <option value="Jul">July</option>
+                    <option value="Aug">August</option>
+                    <option value="Sep">September</option>
+                    <option value="Oct">October</option>
+                    <option value="Nov">November</option>
+                    <option value="Dec">December</option>
+                </Select>
+            </Box>
+
             {/* Grid layout for statistics */}
             <Grid templateColumns={isMobile ? "1fr" : "repeat(5, 1fr)"} gap={6}>
                 <GridItem
@@ -108,75 +184,104 @@ export default function AnalyticsPage() {
                     </Text>
                 </GridItem>
 
-                {/* Single Circular Progress for Total Sales */}
+                {/* Pie Chart showing Reservation Fee vs Rental Sales */}
                 <GridItem
                     bg="#F5F1E1"
-                    p={5}
+                    p={4}
                     borderRadius="md"
                     display="flex"
-                    flexDirection="column"
+                    flexDirection="row"
                     justifyContent="center"
                     alignItems="center"
                     width="520px"
+                    gap={4}
                 >
+                    {/* Pie chart on the Left */}
                     <Box position="relative" display="inline-block">
-                        <CircularProgress
-                            value={salesProgress}
-                            size={isMobile ? "20px" : "100px"}
-                            thickness="10px"
-                            color="#4A6274"
-                            trackColor="#94ACBF"
-                        />
+                        <PieChart width={isMobile ? 200 : 200} height={isMobile ? 200 : 170}>
+                            <Pie
+                                data={pieData}
+                                dataKey="value"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={isMobile ? 50 : 50}
+                                innerRadius={isMobile ? 30 : 40}
+                                fill="#32BE9B"
+                                label
+                            >
+                                <Cell fill="#4A6274" />
+                                <Cell fill="#94ACBF" />
+                            </Pie>
+                        </PieChart>
                         <Text
                             position="absolute"
                             top="50%"
                             left="50%"
                             transform="translate(-50%, -50%)"
-                            fontSize={isMobile ? "md" : "lg"}
+                            fontSize={isMobile ? "sm" : "sm"}
                             fontWeight="bold"
                             color="#4A6274"
                         >
-                            {salesProgress.toFixed(1)}%
+                            Sales
                         </Text>
                     </Box>
-                    <Text fontSize="lg" fontWeight="bold" color="#4A6274" mt={4}>
-                        Total Sales Progress
-                    </Text>
+
+                    {/* Texts on the Right */}
+                    <Box>
+                        <Text fontSize={isMobile ? "sm" : "md"} fontWeight="bold" color="#4A6274" mb={4}>
+                            Reservation Fee: ₱ {reservationFee.toLocaleString()}
+                        </Text>
+
+                        <Text fontSize="md" fontWeight="bold" color="#4A6274">
+                            Rental Sales: ₱ {rentalSales.toLocaleString()}
+                        </Text>
+                    </Box>
                 </GridItem>
             </Grid>
 
             {/* Responsive Chart */}
-            <Box mt={6} bg="#B2DFDB" p={5} borderRadius="md" boxShadow="sm" marginRight={250}>
+            <Box mt={3} bg="#B2DFDB" p={5} borderRadius="md" boxShadow="sm" marginRight={250}>
                 <Box display="flex" justifyContent="center" mb={4}>
                     <Text fontSize="md" fontWeight="bold" color="#4A6274">
                         Monthly Sales Data
                     </Text>
                 </Box>
 
-                <ResponsiveContainer width="100%" height={isMobile ? 200 : 250}>
-                    <LineChart data={data}>
-                        <CartesianGrid strokeDasharray="4 4" />
+                <ResponsiveContainer width="100%" height={isMobile ? 100 : 200}>
+                    <LineChart data={filteredData}>
+                        <CartesianGrid strokeDasharray="5 5" />
                         <XAxis
                             dataKey="month"
-                            label={{
-                                value: "",
-                                position: "insideBottomRight",
-                                offset: -1,
+                            stroke="#4A6274"
+                            tick={{ fontSize: isMobile ? "10px" : "12px" }}
+                        />
+                        <YAxis
+                            stroke="#4A6274"
+                            tick={{ fontSize: isMobile ? "10px" : "12px" }}
+                            tickFormatter={(value) => `₱ ${value.toLocaleString()}`}
+                        />
+                        <Tooltip
+                            labelFormatter={(label) => `Month: ${label}`}
+                            formatter={(value) => `Sales: ₱ ${value.toLocaleString()}`}
+                            contentStyle={{
+                                borderRadius: "8px",
                             }}
                         />
-                        <YAxis />
-                        <Tooltip />
                         <Line
                             type="monotone"
                             dataKey="adultSales"
                             stroke="#32BE9B"
-                            strokeWidth={2}
+                            strokeWidth={2}  
+                            activeDot={{ r: 6 }}
+                            dot={false}
                         />
                         <Line
                             type="monotone"
                             dataKey="kidSales"
-                            stroke="black"
-                            strokeWidth={2}
+                            stroke="#94ACBF"
+                            strokeWidth={2} 
+                            activeDot={{ r: 6 }}
+                            dot={false}
                         />
                     </LineChart>
                 </ResponsiveContainer>

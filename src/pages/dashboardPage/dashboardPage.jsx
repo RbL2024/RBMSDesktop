@@ -175,7 +175,7 @@ const DashboardPage = () => {
             top="20%"
             right="350px"
             transform="translateY(-50%)"
-            background="linear-gradient(135deg, #ff7e5f, #feb47b, #ffd200)"
+            background=" linear-gradient(135deg, #32BE9B, #50C878)"
             padding={3}
             paddingLeft={5}
             paddingRight={5}
