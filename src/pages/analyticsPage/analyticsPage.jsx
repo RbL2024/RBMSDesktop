@@ -25,6 +25,21 @@ export default function AnalyticsPage() {
         "Dec": 700
     };
 
+    const daysInMonth = {
+        "Jan": 31,
+        "Feb": 28,
+        "Mar": 31,
+        "Apr": 30,
+        "May": 31,
+        "Jun": 30,
+        "Jul": 31,
+        "Aug": 31,
+        "Sep": 30,
+        "Oct": 31,
+        "Nov": 30,
+        "Dec": 31
+    };
+
     const truncateMonth = (month) => {
         const monthMap = {
             January: "Jan",
@@ -46,8 +61,8 @@ export default function AnalyticsPage() {
     useEffect(() => {
         // Example monthly sales data for adult and kid bicycles
         const monthlyData = [
-            { month: "January", adultSales: 400, kidSales: 300 },
-            { month: "February", adultSales: 200, kidSales: 150 },
+            { month: "January", adultSales: 300, kidSales: 450 },
+            { month: "February", adultSales: 200, kidSales: 250 },
             { month: "March", adultSales: 300, kidSales: 50 },
             { month: "April", adultSales: 400, kidSales: 300 },
             { month: "May", adultSales: 400, kidSales: 400 },
@@ -69,42 +84,48 @@ export default function AnalyticsPage() {
         setData(truncatedData);
         setFilteredData(truncatedData); // Initially show all months
 
-        // Set reservation fee for "All Months"
-       
-        
     }, []);
 
     useEffect(() => {
         if (selectedMonth === "All Months") {
             setFilteredData(data);
-    
+
             // Recalculate total sales for all months
             const totalAdultSales = data.reduce((acc, item) => acc + item.adultSales, 0);
             setAdultBicycleSales(totalAdultSales);
-    
+
             const totalKidSales = data.reduce((acc, item) => acc + item.kidSales, 0);
             setKidBicycleSales(totalKidSales);
-    
+
             // Calculate total reservation fee for all months
             const totalReservationFee = Object.values(monthlyReservationFee).reduce((acc, value) => acc + value, 0);
             setReservationFee(totalReservationFee); // Set total reservation fee
         } else {
             const filtered = data.filter((item) => item.month === selectedMonth);
-    
-            setFilteredData(filtered);
-    
-            // Update total sales for the selected month
-            const totalAdultSales = filtered.reduce((acc, item) => acc + item.adultSales, 0);
-            setAdultBicycleSales(totalAdultSales);
-    
-            const totalKidSales = filtered.reduce((acc, item) => acc + item.kidSales, 0);
-            setKidBicycleSales(totalKidSales);
-    
-            // Set reservation fee for the selected month from the `monthlyReservationFee` object
-            setReservationFee(monthlyReservationFee[selectedMonth]);
+
+            // Split sales into days for the selected month
+            const daysInSelectedMonth = daysInMonth[selectedMonth];
+            const totalAdultSales = filtered[0].adultSales / daysInSelectedMonth;
+            const totalKidSales = filtered[0].kidSales / daysInSelectedMonth;
+            const totalReservationFee = monthlyReservationFee[selectedMonth] / daysInSelectedMonth;
+
+            // Randomize the daily sales data for the selected month
+            const dailyData = Array.from({ length: daysInSelectedMonth }, (_, index) => {
+                const randomMultiplier = 0.9 + Math.random() * 0.2; // Random factor between 0.9 and 1.1
+                return {
+                    day: `Day ${index + 1}`,
+                    adultSales: totalAdultSales * randomMultiplier,
+                    kidSales: totalKidSales * randomMultiplier,
+                    reservationFee: totalReservationFee * randomMultiplier,
+                };
+            });
+
+            setFilteredData(dailyData);
+            setAdultBicycleSales(totalAdultSales * daysInSelectedMonth);
+            setKidBicycleSales(totalKidSales * daysInSelectedMonth);
+            setReservationFee(totalReservationFee * daysInSelectedMonth);
         }
     }, [selectedMonth, data]);
-    
 
     // Combine total adult and kid bicycle sales into rental sales
     const rentalSales = adultBicycleSales + kidBicycleSales;
@@ -167,7 +188,7 @@ export default function AnalyticsPage() {
                 </GridItem>
 
                 <GridItem
-                    bg="#F2F7F7"
+                    bg="#50C878"
                     p={5}
                     borderRadius="md"
                     display="flex"
@@ -206,32 +227,34 @@ export default function AnalyticsPage() {
                                 cy="50%"
                                 outerRadius={isMobile ? 50 : 50}
                                 innerRadius={isMobile ? 30 : 40}
-                                fill="#32BE9B"
+                                fill="#C85050 "
+                                paddingAngle={5}
                                 label
                             >
-                                <Cell fill="#4A6274" />
-                                <Cell fill="#94ACBF" />
+                                <Cell fill="#C85050 " />
+                                <Cell fill="#50C878" />
                             </Pie>
+
+                            {/* Adding "SALES" label in the center */}
+                            <text
+                                x="50%"
+                                y="50%"
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                                fontSize={isMobile ? "13px" : "13px"}
+                                fill="#4A6274"
+                                fontWeight="bold"
+                            >
+                                SALES
+                            </text>
                         </PieChart>
-                        <Text
-                            position="absolute"
-                            top="50%"
-                            left="50%"
-                            transform="translate(-50%, -50%)"
-                            fontSize={isMobile ? "sm" : "sm"}
-                            fontWeight="bold"
-                            color="#4A6274"
-                        >
-                            Sales
-                        </Text>
                     </Box>
 
-                    {/* Texts on the Right */}
+                    {/* Text with Info on the Right */}
                     <Box>
-                        <Text fontSize={isMobile ? "sm" : "md"} fontWeight="bold" color="#4A6274" mb={4}>
+                        <Text fontSize="md" fontWeight="bold" color="#4A6274">
                             Reservation Fee: ₱ {reservationFee.toLocaleString()}
                         </Text>
-
                         <Text fontSize="md" fontWeight="bold" color="#4A6274">
                             Rental Sales: ₱ {rentalSales.toLocaleString()}
                         </Text>
@@ -239,7 +262,7 @@ export default function AnalyticsPage() {
                 </GridItem>
             </Grid>
 
-            {/* Responsive Chart */}
+            {/* Line Chart for Monthly Sales Data */}
             <Box mt={3} bg="#B2DFDB" p={5} borderRadius="md" boxShadow="sm" marginRight={250}>
                 <Box display="flex" justifyContent="center" mb={4}>
                     <Text fontSize="md" fontWeight="bold" color="#4A6274">
@@ -247,44 +270,48 @@ export default function AnalyticsPage() {
                     </Text>
                 </Box>
 
-                <ResponsiveContainer width="100%" height={isMobile ? 100 : 200}>
-                    <LineChart data={filteredData}>
-                        <CartesianGrid strokeDasharray="5 5" />
-                        <XAxis
-                            dataKey="month"
-                            stroke="#4A6274"
-                            tick={{ fontSize: isMobile ? "10px" : "12px" }}
-                        />
-                        <YAxis
-                            stroke="#4A6274"
-                            tick={{ fontSize: isMobile ? "10px" : "12px" }}
-                            tickFormatter={(value) => `₱ ${value.toLocaleString()}`}
-                        />
-                        <Tooltip
-                            labelFormatter={(label) => `Month: ${label}`}
-                            formatter={(value) => `Sales: ₱ ${value.toLocaleString()}`}
-                            contentStyle={{
-                                borderRadius: "8px",
-                            }}
-                        />
-                        <Line
-                            type="monotone"
-                            dataKey="adultSales"
-                            stroke="#32BE9B"
-                            strokeWidth={2}  
-                            activeDot={{ r: 6 }}
-                            dot={false}
-                        />
-                        <Line
-                            type="monotone"
-                            dataKey="kidSales"
-                            stroke="#94ACBF"
-                            strokeWidth={2} 
-                            activeDot={{ r: 6 }}
-                            dot={false}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
+                {/* Scrollable container */}
+                <Box overflowX="auto" maxWidth="100%">
+                    <ResponsiveContainer width="100%" height={isMobile ? 100 : 200}>
+                        <LineChart data={filteredData}>
+                            <CartesianGrid strokeDasharray="5 5" />
+                            <XAxis
+                                dataKey={selectedMonth === "All Months" ? "month" : "day"} // Show month or day
+                                stroke="#4A6274"
+                                tick={{ fontSize: isMobile ? "10px" : "12px" }}
+                                tickFormatter={(tick) => tick} // Display day or month
+                            />
+                            <YAxis
+                                stroke="#4A6274"
+                                tick={{ fontSize: isMobile ? "10px" : "12px" }}
+                                tickFormatter={(value) => `₱ ${value.toLocaleString()}`}
+                            />
+                            <Tooltip
+                                labelFormatter={(label) => `Day: ${label}`}
+                                formatter={(value) => `Sales: ₱ ${value.toLocaleString()}`}
+                                contentStyle={{
+                                    borderRadius: "8px",
+                                }}
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="adultSales"
+                                stroke="#32BE9B"
+                                strokeWidth={2}
+                                activeDot={{ r: 6 }}
+                                dot={false}
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="kidSales"
+                                stroke="#50C878"
+                                strokeWidth={2}
+                                activeDot={{ r: 6 }}
+                                dot={false}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </Box>
             </Box>
         </Box>
     );
