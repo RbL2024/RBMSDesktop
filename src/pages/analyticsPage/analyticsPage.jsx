@@ -148,7 +148,7 @@ export default function AnalyticsPage() {
                 <Select
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
-                    bg="white"
+                    bg="#F1FFEB"
                     borderRadius="md"
                     width="200px"
                 >
@@ -171,7 +171,7 @@ export default function AnalyticsPage() {
             {/* Grid layout for statistics */}
             <Grid templateColumns={isMobile ? "1fr" : "repeat(5, 1fr)"} gap={6}>
                 <GridItem
-                    bg="#32BE9B"
+                    bg="#B2AC88"
                     borderRadius="md"
                     display="flex"
                     flexDirection="column"
@@ -188,7 +188,7 @@ export default function AnalyticsPage() {
                 </GridItem>
 
                 <GridItem
-                    bg="#50C878"
+                    bg="#7BBF6A"
                     p={5}
                     borderRadius="md"
                     display="flex"
@@ -231,8 +231,8 @@ export default function AnalyticsPage() {
                                 paddingAngle={5}
                                 label
                             >
-                                <Cell fill="#C85050 " />
-                                <Cell fill="#50C878" />
+                                <Cell fill="#B57D7C" />
+                                <Cell fill="#96B579" />
                             </Pie>
 
                             {/* Adding "SALES" label in the center */}
@@ -252,7 +252,7 @@ export default function AnalyticsPage() {
 
                     {/* Text with Info on the Right */}
                     <Box>
-                        <Text fontSize="md" fontWeight="bold" color="#4A6274">
+                        <Text  ext fontSize="md" fontWeight="bold" color="#4A6274">
                             Reservation Fee: ₱ {reservationFee.toLocaleString()}
                         </Text>
                         <Text fontSize="md" fontWeight="bold" color="#4A6274">
@@ -263,14 +263,14 @@ export default function AnalyticsPage() {
             </Grid>
 
             {/* Line Chart for Monthly Sales Data */}
-            <Box mt={3} bg="#B2DFDB" p={5} borderRadius="md" boxShadow="sm" marginRight={250}>
+            <Box mt={3} bg="#A8E6CF" p={5} borderRadius="md" boxShadow="sm" marginRight={250}>
                 <Box display="flex" justifyContent="center" mb={4}>
                     <Text fontSize="md" fontWeight="bold" color="#4A6274">
                         Monthly Sales Data
                     </Text>
                 </Box>
 
-                {/* Scrollable container */}
+             
                 <Box overflowX="auto" maxWidth="100%">
                     <ResponsiveContainer width="100%" height={isMobile ? 100 : 200}>
                         <LineChart data={filteredData}>
@@ -287,7 +287,7 @@ export default function AnalyticsPage() {
                                 tickFormatter={(value) => `₱ ${value.toLocaleString()}`}
                             />
                             <Tooltip
-                                labelFormatter={(label) => `Day: ${label}`}
+                                labelFormatter={(label) => `${label}`}
                                 formatter={(value) => `Sales: ₱ ${value.toLocaleString()}`}
                                 contentStyle={{
                                     borderRadius: "8px",
@@ -296,7 +296,7 @@ export default function AnalyticsPage() {
                             <Line
                                 type="monotone"
                                 dataKey="adultSales"
-                                stroke="#32BE9B"
+                                stroke="#B2AC88"
                                 strokeWidth={2}
                                 activeDot={{ r: 6 }}
                                 dot={true}
@@ -304,7 +304,7 @@ export default function AnalyticsPage() {
                             <Line
                                 type="monotone"
                                 dataKey="kidSales"
-                                stroke="#50C878"
+                                stroke="#7BBF6A"
                                 strokeWidth={2}
                                 activeDot={{ r: 6 }}
                                 dot={true}

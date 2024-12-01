@@ -24,12 +24,7 @@
 }
 @keyframes borderRotate {
     0% {
-        border: 3px solid #E2E2D5;
+        border: 1px solid #5E7343;
     }
-    0% {
-        border: 3px solid #00d9ff;
-    }
-    0% {
-        border: 3px solid #E2E2D5;
-    }
+  
 }

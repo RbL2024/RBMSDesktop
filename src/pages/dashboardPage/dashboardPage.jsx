@@ -175,17 +175,16 @@ const DashboardPage = () => {
             top="20%"
             right="350px"
             transform="translateY(-50%)"
-            background=" linear-gradient(135deg, #32BE9B, #50C878)"
+            background=" linear-gradient(225deg, #A7E4B0,#6BCF85, #4B9E6B , #032820)"
             padding={3}
             paddingLeft={5}
             paddingRight={5}
             borderRadius={20}
             marginTop={-3}
-            boxShadow="0px 4px 15px rgba(0, 0, 0, 0.2), inset 0px 2px 4px rgba(0, 0, 0, 0.1)" // Inner shadow
             animation="borderRotate 6s linear infinite" // Rotating border effect
              cursor="grab"
             _hover={{
-            boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.3), 0px 0px 20px rgba(0, 217, 255, 0.6)", // Glow effect on hover
+            boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.3), 0px 0px 20px rgba(3, 40, 32, 0.6)",
              }}
             >
             <Image src={logo} boxSize="200px" alt="Logo" animation="bikeMotion 2s ease-in-out infinite" />
@@ -229,7 +228,7 @@ const DashboardPage = () => {
                 </Box>
 
                 {/* Monthly Income Chart */}
-                <Box w="50%" h="320px" bg="#B2DFDB" p="10px" rounded="lg" shadow="md" textAlign="center" marginRight={300} marginLeft={100} borderRadius={20}>
+                <Box w="50%" h="320px" bg="#A8E6CF" p="10px" rounded="lg" shadow="md" textAlign="center" marginRight={300} marginLeft={100} borderRadius={20}>
                     <Text fontSize="lg" fontWeight="bold" mb="10px">Monthly Income</Text>
                     <ResponsiveContainer width="100%" height="90%">
                         <LineChart data={incomeData}>
@@ -240,9 +239,9 @@ const DashboardPage = () => {
                             <Line
                                 type="monotone"
                                 dataKey="income"
-                                stroke="#000"
+                                stroke="#223A59"
                                 strokeWidth={2}
-                                dot={{ r: 5 }}
+                                dot={{ r: 2 }}
                                 animationDuration={1500}  // Duration of the animation
                                 animationEasing="ease-out"  // Easing type for smooth animation
                             />
