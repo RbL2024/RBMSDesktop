@@ -158,22 +158,27 @@ export default function AvailablityPage() {
                                 p='10px'
                                 pos='relative'
                             >
-                                <Box position='absolute' top='0' left='0' right='0' bottom='0' zIndex='0'>
+                            {/* IMAGE CLICK HANDLER */}
+                                <Box position="absolute" top="0" left="0" right="0" bottom="0" zIndex="0">
                                     <img
-                                        src={bike.bike_image_url} // Assuming bike.imageUrl contains the URL of the image
+                                        src={bike.bike_image_url} // Assuming bike.bike_image_url contains the URL of the image
                                         alt={`Bike ${bike.bike_id}`}
                                         style={{
                                             width: '100%',
                                             height: '100%',
                                             objectFit: 'fill',
-                                            opacity: '0.5', // Adjust opacity as needed
-                                            borderRadius: '12px', // Match the rounded corners
-                                            cursor : 'pointer',
+                                            opacity: bike.bike_status === "VACANT" ? '0.8' : '0.4', // Lower opacity for VACANT bikes
+                                            borderRadius: '12px',
+                                            cursor: bike.bike_status !== "VACANT" ? 'not-allowed' : 'pointer', // Not-allowed for non-VACANT bikes
                                         }}
-                                        onClick={() => handleVacantBikeClick(bike)} // Pass the bike data here
+                                        onClick={() => {
+                                            if (bike.bike_status === "VACANT") {
+                                                handleVacantBikeClick(bike); // Handle the click only if the bike is VACANT
+                                            }
+                                        }}
                                     />
                                 </Box>
-                                <Box display='flex' justifyContent='space-between' alignItems='center'>
+                                    <Box display='flex' justifyContent='space-between' alignItems='center'>
                                     <Text textAlign='center' m='0'>{bike.bike_id}</Text>
                                     <IconButton
                                         aria-label='Remove bike'

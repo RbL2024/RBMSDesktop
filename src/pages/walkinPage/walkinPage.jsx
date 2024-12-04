@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState }  from 'react';
 import {
     Box,
     Flex,
@@ -9,7 +9,11 @@ import {
     Checkbox,
     Image,
     IconButton, 
-    Stack
+    Stack,
+    InputGroup,
+    InputLeftAddon,
+     Divider 
+    
     
 } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
@@ -21,10 +25,11 @@ const WalkinPage = ({ bike = {} }) => {
   
     const increaseDuration = () => setDuration(prevDuration => prevDuration + 1);
     const decreaseDuration = () => setDuration(prevDuration => (prevDuration > 1 ? prevDuration - 1 : 1)); // Prevent going below 1
-  
+    
+    const [contactNumber, setContactNumber] = useState('');
 
     return (
-        <Box minH="100vh" p={6} display="flex" flexDirection="column" alignItems="center" marginRight={250} >
+        <Box minH="100vh" p={6} display="flex" flexDirection="column" alignItems="center" marginRight={250}>
          
          <Button
             size="md"
@@ -33,7 +38,7 @@ const WalkinPage = ({ bike = {} }) => {
             _hover={{ bg: "#c4c4c4" }}
             right={-350}
             >
-            <span style={{ fontSize: "25px",  marginRight: "8px" }}>&#8592;</span> Available Bike
+            <span style={{ fontSize: "20px",  marginRight: "8px" }}>&#8592;</span> Available Bike
             </Button>   
             
             <Flex
@@ -41,19 +46,20 @@ const WalkinPage = ({ bike = {} }) => {
                 borderRadius="15"
                 boxShadow="md"
                 w="100%"
-                minH="70vh"
+                minH="80vh"
                 p={6}
               
                 direction="column"
                 gap={4}
                 mt={-50}
                 marginRight={50}
+            
             >
                 {/* Form Section */}
-                <Text fontSize="md" fontWeight="bold" mt={-1}>
+                <Text fontSize="md" fontWeight="bold" mt={-4}>
                                     Walk in customers
                                 </Text>
-                <Flex justifyContent="flex-start" mb={1}>
+                <Flex justifyContent="flex-start" mb={-1}>
                     <Box flex="1" mr={4}>
                         <Text mb={1}>First Name</Text>
                         <Input
@@ -65,11 +71,11 @@ const WalkinPage = ({ bike = {} }) => {
                         />
                     </Box>
                     <Box flex="1">
-                        <Text mb={1}>Contact Number</Text>
-                        <Input
-                            placeholder="Contact Number"
+                        <Text mb={1}>Age</Text>
+                        <Input 
+                            placeholder="Age" 
+                            borderColor="#d9d9d9" 
                             backgroundColor="white"
-                            borderColor="#d9d9d9"
                             w="50%"
                             size="md"
                         />
@@ -86,16 +92,30 @@ const WalkinPage = ({ bike = {} }) => {
                             size="md"
                         />
                     </Box>
+
                     <Box flex="1">
-                        <Text mb={1}>Age</Text>
-                        <Input 
-                            placeholder="Age" 
-                            borderColor="#d9d9d9" 
-                            backgroundColor="white"
-                            w="50%"
-                            size="md"
-                        />
+                      <Text mb={1}>Contact Number</Text>
+                        <InputGroup width="50%">
+                            {/* Prefix +63 as static text */}
+                            <InputLeftAddon children="+63" backgroundColor="gray.100" />
+                            
+                            {/* Input for the rest of the contact number */}
+                            <Input
+                                placeholder="Enter number"
+                                backgroundColor="white"
+                                borderColor="#d9d9d9"
+                                size="md"
+                                type="tel"
+                                onChange={(e) => {
+                                    // Allow only numbers
+                                    const numericText = e.target.value.replace(/[^0-9]/g, '');
+                                    setContactNumber(numericText);
+                                }}
+                                value={contactNumber} // Bind this to the state
+                            />
+                        </InputGroup>
                     </Box>
+                  
                 </Flex>
 
                 {/* Bike Details Section */}
@@ -107,9 +127,10 @@ const WalkinPage = ({ bike = {} }) => {
                     boxShadow="sm"
                     alignItems="center"
                     justifyContent="space-between"
+                    direction="row"
                 >
                     {/* Image Section */}
-                    <Box textAlign="center" >
+                    <Box  textAlign="center" >
                     <Text fontSize="md" fontWeight="bold" mt={-1}>
                                     Bike Information
                                 </Text>
@@ -124,7 +145,7 @@ const WalkinPage = ({ bike = {} }) => {
                         />
                       
                         
-                        <Text mt= {1} fontSize="sm" color="gray.500">
+                        <Text mt= {1} fontSize="sm" color="gray.700">
                             {bike.bike_status || "Unknown Status"}
                         </Text>
                     </Box>
@@ -134,7 +155,7 @@ const WalkinPage = ({ bike = {} }) => {
                         {bike ? (
                             <Box >
                                
-                                <Text fontSize="md" mt={-3}>
+                                <Text fontSize="md" mt={1}>
                                     <strong>Bike ID:</strong> {bike.bike_id || "N/A"}
                                 </Text>
                                 <Text fontSize="md" mt={-3}>
@@ -145,35 +166,42 @@ const WalkinPage = ({ bike = {} }) => {
                                 </Text>
                                
                                 <Text fontSize="md" mt={-3}>
-                                    <strong>Price:₱  </strong> {bike.bike_rent_price || "N/A"}
+                                    <strong>Price: ₱  </strong> {bike.bike_rent_price || "N/A"}
                                 </Text>
                                 
                                 <Stack direction="row" align="center" mt={-3}>
                                 <Text fontSize="md">
-                                <strong>Duration of use:</strong> {duration} hours
+                                <strong>Duration of use:</strong> 
                                 </Text>
                                 <IconButton
                                 icon={<MinusIcon />}
                                 onClick={decreaseDuration}
                                 aria-label="Decrease Duration"
-                                mt={-5}
+                                mt={-4}
                                 backgroundColor="#32BE9B"
                                 _hover={{ backgroundColor: "#50C878" }}
                                 size="xs"
                                 />
+                                
+                                <Text fontSize="sm"  padding="1" width={50} height={7} borderRadius="md" textAlign="center" justifyContent="center" marginTop={0} backgroundColor={"#e5e4d7"}>
+                                {duration}
+                                </Text>
+                                
                                 <IconButton
                                 icon={<AddIcon />}
                                 onClick={increaseDuration}
                                 aria-label="Increase Duration"
-                                mt={-5}
+                                mt={-4}
                                 backgroundColor="#32BE9B"
                                 _hover={{ backgroundColor: "#50C878" }}
                                 size="xs"
                                 />
-                            </Stack>
+                                </Stack>
+                                <Divider borderColor="black" borderWidth="1px" />
+                               
 
                             <Text fontSize="md" mt={1} color="red">
-                                <strong>Total Price: ₱ </strong> {totalPrice || 'N/A'}
+                                <strong>Total Price Rent: ₱ </strong> {totalPrice || 'N/A'}
                             </Text>
                             
                             </Box>
