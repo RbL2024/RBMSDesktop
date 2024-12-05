@@ -29,6 +29,16 @@ const WalkinPage = ({ bike = {} }) => {
     const [contactNumber, setContactNumber] = useState('');
     const [isavailabilityPage, setIsAvailabilityPage] = useState(false);
 
+    const [age, setAge] = useState("");
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+
+        // Only allow numeric values and restrict to a maximum of 3 digits
+        if (/^\d*$/.test(value) && value.length <= 3) {
+          setAge(value);
+        }
+      };
+
     const renderAvailabilityPage = () => {
         <AvailabilityPage />
     }
@@ -56,22 +66,54 @@ const WalkinPage = ({ bike = {} }) => {
 
                         direction="column"
                         gap={4}
-                        mt={-50}
+                        mt={-53}
                         marginRight={50}
 
                     >
                         {/* Form Section */}
-                        <Text fontSize="md" fontWeight="bold" mt={-4}>
+                        <Text fontSize="md" fontWeight="bold" mt={-5}>
                             Walk in customers
                         </Text>
                         <Flex justifyContent="flex-start" mb={-1}>
-                            <Box flex="1" mr={4}>
+                            <Box flex="1">
                                 <Text mb={1}>First Name</Text>
                                 <Input
                                     placeholder="First Name"
                                     borderColor="#d9d9d9"
                                     backgroundColor="white"
-                                    w="50%"
+                                    w="70%"
+                                    size="md"
+                                />
+                            </Box>
+                            <Box flex="1">
+                                <Text mb={1}>Username</Text>
+                                <Input
+                                    placeholder="Username"
+                                    borderColor="#d9d9d9"
+                                    backgroundColor="white"
+                                    w="70%"
+                                    size="md"
+                                />
+                            </Box>
+                            <Box flex="1">
+                                <Text mb={1}>Email</Text>
+                                <Input
+                                    placeholder="Email"
+                                    borderColor="#d9d9d9"
+                                    backgroundColor="white"
+                                    w="70%"
+                                    size="md"
+                                />
+                            </Box>
+                        </Flex>
+                        <Flex justifyContent="flex-start">
+                            <Box flex="1">
+                                <Text mb={1}>Last Name</Text>
+                                <Input
+                                    placeholder="Last Name"
+                                    backgroundColor="white"
+                                    borderColor="#d9d9d9"
+                                    w="70%"
                                     size="md"
                                 />
                             </Box>
@@ -79,38 +121,29 @@ const WalkinPage = ({ bike = {} }) => {
                                 <Text mb={1}>Age</Text>
                                 <Input
                                     placeholder="Age"
-                                    borderColor="#d9d9d9"
-                                    backgroundColor="white"
-                                    w="50%"
-                                    size="md"
-                                />
-                            </Box>
-                        </Flex>
-                        <Flex justifyContent="space-between">
-                            <Box flex="1" mr={4}>
-                                <Text mb={1}>Last Name</Text>
-                                <Input
-                                    placeholder="Last Name"
                                     backgroundColor="white"
                                     borderColor="#d9d9d9"
-                                    w="50%"
+                                    w="70%"
                                     size="md"
+                                    value={age}
+                                    onChange={handleInputChange}
                                 />
                             </Box>
 
                             <Box flex="1">
                                 <Text mb={1}>Contact Number</Text>
-                                <InputGroup width="50%">
-                                    {/* Prefix +63 as static text */}
-                                    <InputLeftAddon children="+63" backgroundColor="gray.100" />
+                                <InputGroup width="70%">
+                                   {/* Prefix +63 as static text */}
+                                   <InputLeftAddon children="+63" backgroundColor="gray.100" />
 
                                     {/* Input for the rest of the contact number */}
                                     <Input
-                                        placeholder="Enter number"
+                                        placeholder="Phone number "
                                         backgroundColor="white"
                                         borderColor="#d9d9d9"
                                         size="md"
                                         type="tel"
+                                        maxLength={10}
                                         onChange={(e) => {
                                             // Allow only numbers
                                             const numericText = e.target.value.replace(/[^0-9]/g, '');
