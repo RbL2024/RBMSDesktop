@@ -21,7 +21,7 @@ export default function AvailablityPage() {
     const [superadmin, setSuperadmin] = useState('');
     const toast = useToast();
     const [isWalkInPage, setIsWalkInPage] = useState(false);  // State to control Walk-In page visibility
-   
+
 
     const handleSearch = useCallback(() => {
         const inputValue = 'BID-' + inputRef.current.value.trim();
@@ -97,55 +97,57 @@ export default function AvailablityPage() {
 
     const renderWalkInPage = () => (
         <WalkinPage bike={selectedBike} /> // Pass the selected bike data as a prop
-       
+
     );
-   
-    
+
+
 
     return (
         <Box>
-            <Box className='legends' display='flex' justifyContent='space-between' w='950px' position='relative'>
-                <Box width='120px' display='flex' alignItems='center' justifyContent='center' gap='12px' ml='75px'>
-                    <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
-                        <Box boxSize='12px' bg='#E37383' />
-                        <Text fontSize='sm' m={0} mt='2px'>Rented</Text>
-                    </Box>
-                    <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
-                        <Box boxSize='12px' bg='#939393' />
-                        <Text fontSize='sm' m={0} mt='2px'>Vacant</Text>
-                    </Box>
-                    <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
-                        <Box boxSize='12px' bg='#4396BD' />
-                        <Text fontSize='sm' m={0} mt='2px'>User</Text>
-                    </Box>
-                    <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
-                        <Box boxSize='12px' bg='#f9f871' />
-                        <Text fontSize='sm' m={0} mt='2px'>Reserved</Text>
-                    </Box>
-                </Box>
-                <Box>
-                    <FormControl>
-                        <InputGroup>
-                            <InputLeftAddon>
-                                BID-
-                            </InputLeftAddon>
-                            <Input
-                                w='200px'
-                                type='text'
-                                placeholder='Search by bike id'
-                                ref={inputRef}
-                            />
-                            <InputRightElement>
-                                <FiSearch onClick={handleSearch} cursor="pointer" />
-                            </InputRightElement>
-                        </InputGroup>
-                    </FormControl>
-                </Box>
-            </Box>
-            
+
+
             {/* Conditionally render either Availability or Walk-In page */}
             {isWalkInPage ? renderWalkInPage() : (
-                <Box mt='10px' w='950px' h='575px' rounded='2xl' shadow='lg' padding='20px' bg='#E2E2D5' overflowY='auto' className='BAvail'>
+
+                <Box mt='10px' w='950px' h='615px' rounded='2xl' shadow='lg' padding='20px' bg='#E2E2D5' overflowY='auto' className='BAvail'>
+                    <Box className='legends' display='flex' justifyContent='space-between' w='900px' position='relative'>
+                        <Box width='120px' display='flex' alignItems='center' justifyContent='center' gap='12px' ml='75px'>
+                            <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
+                                <Box boxSize='12px' bg='#E37383' />
+                                <Text fontSize='sm' m={0} mt='2px'>Rented</Text>
+                            </Box>
+                            <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
+                                <Box boxSize='12px' bg='#939393' />
+                                <Text fontSize='sm' m={0} mt='2px'>Vacant</Text>
+                            </Box>
+                            <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
+                                <Box boxSize='12px' bg='#4396BD' />
+                                <Text fontSize='sm' m={0} mt='2px'>User</Text>
+                            </Box>
+                            <Box display='flex' alignItems='center' justifyContent='center' gap='5px'>
+                                <Box boxSize='12px' bg='#f9f871' />
+                                <Text fontSize='sm' m={0} mt='2px'>Reserved</Text>
+                            </Box>
+                        </Box>
+                        <Box>
+                            <FormControl>
+                                <InputGroup>
+                                    <InputLeftAddon>
+                                        BID-
+                                    </InputLeftAddon>
+                                    <Input
+                                        w='200px'
+                                        type='text'
+                                        placeholder='Search by bike id'
+                                        ref={inputRef}
+                                    />
+                                    <InputRightElement>
+                                        <FiSearch onClick={handleSearch} cursor="pointer" />
+                                    </InputRightElement>
+                                </InputGroup>
+                            </FormControl>
+                        </Box>
+                    </Box>
                     <Grid templateColumns='repeat(4, 1fr)' gap={'30px'}>
                         {fetchedBikes.map((bike) => (
                             <GridItem
@@ -158,7 +160,7 @@ export default function AvailablityPage() {
                                 p='10px'
                                 pos='relative'
                             >
-                            {/* IMAGE CLICK HANDLER */}
+                                {/* IMAGE CLICK HANDLER */}
                                 <Box position="absolute" top="0" left="0" right="0" bottom="0" zIndex="0">
                                     <img
                                         src={bike.bike_image_url} // Assuming bike.bike_image_url contains the URL of the image
@@ -178,7 +180,7 @@ export default function AvailablityPage() {
                                         }}
                                     />
                                 </Box>
-                                    <Box display='flex' justifyContent='space-between' alignItems='center'>
+                                <Box display='flex' justifyContent='space-between' alignItems='center'>
                                     <Text textAlign='center' m='0'>{bike.bike_id}</Text>
                                     <IconButton
                                         aria-label='Remove bike'
@@ -216,7 +218,7 @@ export default function AvailablityPage() {
                                 ) : bike.bike_status === 'VACANT' ? (
                                     <Box pos='relative' mt='46%'>
                                         <Box w='100%' h='30px' bg='#939393' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
-                                            <Text m={0} width='100%' textAlign='center'    onClick={() => handleVacantBikeClick(bike)}  cursor='pointer'>
+                                            <Text m={0} width='100%' textAlign='center' onClick={() => handleVacantBikeClick(bike)} cursor='pointer'>
                                                 VACANT
                                             </Text>
                                         </Box>
@@ -227,16 +229,16 @@ export default function AvailablityPage() {
                                     </Box>
                                 )}
                             </GridItem>
-                            
+
                         ))}
                     </Grid>
                 </Box>
-                
+
             )}
 
-            
-  
- 
+
+
+
 
             {/* Modal for bike deletion */}
             <Modal isOpen={isOpen} onClose={onClose}>

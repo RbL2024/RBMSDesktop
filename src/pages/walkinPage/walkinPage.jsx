@@ -17,6 +17,7 @@ import {
 
 } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
+import AvailabilityPage from '../availabilityPage/availabilityPage.jsx';
 
 const WalkinPage = ({ bike = {} }) => {
     const [duration, setDuration] = useState(1); // default duration set to 1
@@ -26,6 +27,7 @@ const WalkinPage = ({ bike = {} }) => {
     const decreaseDuration = () => setDuration(prevDuration => (prevDuration > 1 ? prevDuration - 1 : 1)); // Prevent going below 1
 
     const [contactNumber, setContactNumber] = useState('');
+    const [currentPage, setCurrentPage] = useState('walkin'); // State to manage current page
 
     const [age, setAge] = useState("");
     const handleInputChange = (e) => {
@@ -37,6 +39,13 @@ const WalkinPage = ({ bike = {} }) => {
         }
     };
 
+    const handleAvailableBikeClick = () => {
+        setCurrentPage('availability'); // Change the current page to availability
+    };
+
+    if (currentPage === 'availability') {
+        return <AvailabilityPage />; // Render the AvailabilityPage component
+    }
     return (
         <Box minH="100vh" p={6} display="flex" flexDirection="column" alignItems="center" marginRight={250}>
 
@@ -46,6 +55,7 @@ const WalkinPage = ({ bike = {} }) => {
                 fontWeight="medium"
                 _hover={{ bg: "#c4c4c4" }}
                 right={-350}
+                onClick={handleAvailableBikeClick}
             >
                 <span style={{ fontSize: "20px", marginRight: "8px" }}>&#8592;</span> Available Bike
             </Button>
