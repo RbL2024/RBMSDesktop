@@ -18,18 +18,18 @@ import {
     ModalCloseButton,
 } from '@chakra-ui/react'
 
-import {useShared} from '../../contextAPI.jsx';
+import { useShared } from '../../contextAPI.jsx';
 
 const closeMe = window.api;
 const Sidenav = () => {
     // const [activeLink, setActiveLink] = useState('Dashboard');
-    const  {activeLink, setActiveLink} = useShared();
+    const { activeLink, setActiveLink } = useShared();
 
     const [isSAdmin, setisSAdmin] = useState('');
 
     const { setActiveP } = useShared();
-    
-    
+
+
     const handleLinkClick = (linkName) => {
         setActiveLink(linkName);
         // setActivePage(linkName);
@@ -40,9 +40,9 @@ const Sidenav = () => {
     const handleYesClick = () => {
         closeMe.close();
     }
-    useEffect(()=>{
+    useEffect(() => {
         setisSAdmin(localStorage.getItem('isSAdmin'));
-    },[])
+    }, [])
     return (
         <Box w='200px' height='87vh' shadow='2xl' borderRadius='2xl' bg='#E2E2D5' ml='20px'>
             <VStack pos='relative' w='100%' >
@@ -55,6 +55,16 @@ const Sidenav = () => {
                             </Box>
                         </Link>
                     </Box>
+                    {/* {(isSAdmin === 'true') ? (
+                        <Box mb='10px' mt='10px'>
+                            <Link className={`nav-links ${activeLink === 'User' ? 'active' : ''}`} href='#' h='10px' style={{ textDecoration: 'none' }} onClick={() => handleLinkClick('User')}>
+                                <Box className='nav-content' p='7px' display='flex' pl='20px'>
+                                    <Icon as={FaRegUser} boxSize={6} mr={2} />
+                                    <Text m='0' fontSize='16px' pt='2px'>Accounts</Text>
+                                </Box>
+                            </Link>
+                        </Box>
+                    ) : ''} */}
                     <Box mb='10px' mt='10px'>
                         <Link className={`nav-links ${activeLink === 'User' ? 'active' : ''}`} href='#' h='10px' style={{ textDecoration: 'none' }} onClick={() => handleLinkClick('User')}>
                             <Box className='nav-content' p='7px' display='flex' pl='20px'>
@@ -71,16 +81,16 @@ const Sidenav = () => {
                             </Box>
                         </Link>
                     </Box>
-                    {(isSAdmin==='true')?(
+                    {(isSAdmin === 'true') ? (
                         <Box mb='10px' mt='10px'>
-                        <Link className={`nav-links ${activeLink === 'Analytics' ? 'active' : ''}`} href='#' h='10px' style={{ textDecoration: 'none' }} onClick={() => handleLinkClick('Analytics')}>
-                            <Box className='nav-content' p='7px' display='flex' pl='20px'>
-                                <Icon as={IoAnalyticsSharp} boxSize={6} mr={2} />
-                                <Text m='0' fontSize='16px' pt='2px'>Analytics</Text>
-                            </Box>
-                        </Link>
-                    </Box>
-                    ): ''}
+                            <Link className={`nav-links ${activeLink === 'Analytics' ? 'active' : ''}`} href='#' h='10px' style={{ textDecoration: 'none' }} onClick={() => handleLinkClick('Analytics')}>
+                                <Box className='nav-content' p='7px' display='flex' pl='20px'>
+                                    <Icon as={IoAnalyticsSharp} boxSize={6} mr={2} />
+                                    <Text m='0' fontSize='16px' pt='2px'>Analytics</Text>
+                                </Box>
+                            </Link>
+                        </Box>
+                    ) : ''}
                     <Box mb='10px' mt='10px'>
                         <Link className={`nav-links ${activeLink === 'Reservation' ? 'active' : ''}`} href='#' h='10px' style={{ textDecoration: 'none' }} onClick={() => handleLinkClick('Reservation')}>
                             <Box className='nav-content' p='7px' display='flex' pl='20px'>
@@ -135,7 +145,7 @@ const Sidenav = () => {
                                 <Box as='button' bg='#355E3B' w='125px' h='30px' color='white' rounded='lg' mr='5px' ml='5px' onClick={handleYesClick}>
                                     Yes
                                 </Box>
-                                <Box as='button' bg='#AB0505' w='125px' h='30px' color='white' rounded='lg' mr='5px' ml='5px'  onClick={onClose}>
+                                <Box as='button' bg='#AB0505' w='125px' h='30px' color='white' rounded='lg' mr='5px' ml='5px' onClick={onClose}>
                                     Cancel
                                 </Box>
                             </ModalFooter>
