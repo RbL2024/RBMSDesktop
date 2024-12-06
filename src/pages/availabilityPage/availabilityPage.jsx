@@ -138,6 +138,7 @@ export default function AvailablityPage() {
                                     <Input
                                         w='200px'
                                         type='text'
+                                        mb={5}
                                         placeholder='Search by bike id'
                                         ref={inputRef}
                                     />

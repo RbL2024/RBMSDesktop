@@ -34,7 +34,7 @@ const WalkinPage = ({ bike = {} }) => {
         const value = e.target.value;
 
         // Only allow numeric values and restrict to a maximum of 3 digits
-        if (/^\d*$/.test(value) && value.length <= 3) {
+        if (/^\d*$/.test(value) && value.length <= 2) {
             setAge(value);
         }
     };
@@ -51,9 +51,10 @@ const WalkinPage = ({ bike = {} }) => {
 
             <Button
                 size="md"
-                bg="#d9d9d9"
+                bg="#405c4f"
                 fontWeight="medium"
-                _hover={{ bg: "#c4c4c4" }}
+                color="white"
+                _hover={{ bg: "#2e4437" }}
                 right={-350}
                 onClick={handleAvailableBikeClick}
             >
@@ -65,7 +66,7 @@ const WalkinPage = ({ bike = {} }) => {
                 borderRadius="15"
                 boxShadow="md"
                 w="100%"
-                minH="80vh"
+                minH="85vh"
                 p={6}
 
                 direction="column"
@@ -123,15 +124,22 @@ const WalkinPage = ({ bike = {} }) => {
                     </Box>
                     <Box flex="1">
                         <Text mb={1}>Age</Text>
-                        <Input
-                            placeholder="Age"
-                            backgroundColor="white"
-                            borderColor="#d9d9d9"
-                            w="70%"
-                            size="md"
-                            value={age}
-                            onChange={handleInputChange}
-                        />
+                        <Select
+                        placeholder="Select age"
+                        backgroundColor="white"
+                        borderColor="#d9d9d9"
+                        cursor="pointer"
+                        w="70%"
+                        size="md"
+                        value={age}
+                        onChange={handleInputChange}
+                        >
+                        {Array.from({ length: 99 }, (_, i) => (
+                            <option key={i + 1} value={i + 1}>
+                                {i + 1}
+                            </option>
+                        ))}
+                        </Select>
                     </Box>
 
                     <Box flex="1">
@@ -162,7 +170,7 @@ const WalkinPage = ({ bike = {} }) => {
 
                 {/* Bike Details Section */}
                 <Flex
-                    bg="#f7f7f7"
+                    bg="transparent"
                     borderRadius="md"
                     p={4}
                     mt={6}
@@ -219,9 +227,10 @@ const WalkinPage = ({ bike = {} }) => {
                                         icon={<MinusIcon />}
                                         onClick={decreaseDuration}
                                         aria-label="Decrease Duration"
+                                        color="white"
                                         mt={-4}
-                                        backgroundColor="#32BE9B"
-                                        _hover={{ backgroundColor: "#50C878" }}
+                                        backgroundColor="#405c4f"
+                                        _hover={{ backgroundColor: "#2e4437" }}
                                         size="xs"
                                     />
 
@@ -233,9 +242,10 @@ const WalkinPage = ({ bike = {} }) => {
                                         icon={<AddIcon />}
                                         onClick={increaseDuration}
                                         aria-label="Increase Duration"
+                                        color="white"
                                         mt={-4}
-                                        backgroundColor="#32BE9B"
-                                        _hover={{ backgroundColor: "#50C878" }}
+                                        backgroundColor="#405c4f"
+                                        _hover={{ backgroundColor: "#2e4437" }}
                                         size="xs"
                                     />
                                 </Stack>
@@ -256,7 +266,7 @@ const WalkinPage = ({ bike = {} }) => {
                 </Flex>
 
                 {/* Checkbox and Rent Button */}
-                <Flex alignItems="center" justifyContent="space-between" mt={1} mb={-3}>
+                <Flex alignItems="center" justifyContent="space-between" mt={4} mb={-3}>
                     <Checkbox mt={-2}
                         colorScheme="green"
                         sx={{
