@@ -87,7 +87,7 @@ export default function AvailablityPage() {
     const handleUnauthorized = () => {
         toast({
             title: 'Unauthorized',
-            description: 'You do not have permission to view this page.',
+            description: 'You do not have permission to do this action.',
             status: 'warning',
             duration: 3000,
             position: 'top',

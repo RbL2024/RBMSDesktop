@@ -12,14 +12,18 @@ import {
     Stack,
     InputGroup,
     InputLeftAddon,
-    Divider
-
-
+    Divider,
+    useToast
 } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import AvailabilityPage from '../availabilityPage/availabilityPage.jsx';
 
+
+
+
+
 const WalkinPage = ({ bike = {} }) => {
+    const toast = useToast();
     const [duration, setDuration] = useState(1); // default duration set to 1
     const totalPrice = bike.bike_rent_price * duration; // calculate total price based on duration
 
@@ -29,6 +33,11 @@ const WalkinPage = ({ bike = {} }) => {
     const [contactNumber, setContactNumber] = useState('');
     const [currentPage, setCurrentPage] = useState('walkin'); // State to manage current page
 
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [age, setAge] = useState("");
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -46,6 +55,65 @@ const WalkinPage = ({ bike = {} }) => {
     if (currentPage === 'availability') {
         return <AvailabilityPage />; // Render the AvailabilityPage component
     }
+
+
+
+    const handleRent = () => {
+        function tempPass(length) {
+            let result = '';
+            // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            // const characters = '0123456789';
+            const charactersLength = characters.length;
+            let counter = 0;
+            while (counter < length) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                counter += 1;
+            }
+            return result;
+        }
+
+        const getcurrentTime = getCurrentTimeInAMPM();
+        const tor = convertSecondsToTimeWithAMPM(convertTimeToSeconds(getcurrentTime, duration));   
+
+
+        console.log(firstName, lastName, username, email, '0'+contactNumber, age, bike.bike_id);
+        const walkinInfo = {
+            name: firstName + ' ' + lastName,
+            username: username,
+            password: tempPass(5),
+            phone: '0'+contactNumber,
+            email: email,
+            age: age,
+        }
+
+        const walkinRentInfo = {
+            name: firstName + ' ' + lastName,
+            phone: '0'+contactNumber,
+            email: email,
+            bike_id: bike.bike_id,
+            duration: duration,
+            timeofuse: getcurrentTime,
+            returnTime: tor,
+            totalBikeRentPrice: totalPrice
+        }
+
+        console.log(walkinRentInfo);
+
+        if(firstName==="", lastName==="",username==="",email==="",contactNumber==="",age===""){
+            toast({
+                title: 'Blank fields',
+                description: 'Please fill out all fields.',
+                status: 'error',
+                duration: 3000,
+                position: 'top',
+                isClosable: true,
+            });
+            return;
+        }
+    }
+
+
     return (
         <Box minH="100vh" p={6} display="flex" flexDirection="column" alignItems="center" marginRight={250}>
 
@@ -88,6 +156,8 @@ const WalkinPage = ({ bike = {} }) => {
                             backgroundColor="white"
                             w="70%"
                             size="md"
+                            value={firstName}
+                            onChange={(e)=>setFirstName(e.target.value)}
                         />
                     </Box>
                     <Box flex="1">
@@ -98,6 +168,8 @@ const WalkinPage = ({ bike = {} }) => {
                             backgroundColor="white"
                             w="70%"
                             size="md"
+                            value={username}
+                            onChange={(e)=>setUsername(e.target.value)}
                         />
                     </Box>
                     <Box flex="1">
@@ -108,6 +180,8 @@ const WalkinPage = ({ bike = {} }) => {
                             backgroundColor="white"
                             w="70%"
                             size="md"
+                            value={email}
+                            onChange={(e)=>setEmail(e.target.value)}
                         />
                     </Box>
                 </Flex>
@@ -120,9 +194,23 @@ const WalkinPage = ({ bike = {} }) => {
                             borderColor="#d9d9d9"
                             w="70%"
                             size="md"
+                            value={lastName}
+                            onChange={(e)=>setLastName(e.target.value)}
                         />
                     </Box>
                     <Box flex="1">
+                        <Text mb={1}>Age</Text>
+                        <Input
+                            placeholder="Input age"
+                            backgroundColor="white"
+                            borderColor="#d9d9d9"
+                            w="70%"
+                            size="md"
+                            value={age}
+                            onChange={handleInputChange}
+                        />
+                    </Box>
+                    {/* <Box flex="1">
                         <Text mb={1}>Age</Text>
                         <Select
                         placeholder="Select age"
@@ -140,7 +228,7 @@ const WalkinPage = ({ bike = {} }) => {
                             </option>
                         ))}
                         </Select>
-                    </Box>
+                    </Box> */}
 
                     <Box flex="1">
                         <Text mb={1}>Contact Number</Text>
@@ -204,7 +292,6 @@ const WalkinPage = ({ bike = {} }) => {
                     <Box flex="1" ml={6}>
                         {bike ? (
                             <Box >
-
                                 <Text fontSize="md" mt={1}>
                                     <strong>Bike ID:</strong> {bike.bike_id || "N/A"}
                                 </Text>
@@ -266,8 +353,8 @@ const WalkinPage = ({ bike = {} }) => {
                 </Flex>
 
                 {/* Checkbox and Rent Button */}
-                <Flex alignItems="center" justifyContent="space-between" mt={4} mb={-3}>
-                    <Checkbox mt={-2}
+                <Flex alignItems="flex-end" justifyContent="space-between" mt={4} mb={-3}>
+                    {/* <Checkbox mt={-2}
                         colorScheme="green"
                         sx={{
                             'span.chakra-checkbox__control': {
@@ -281,8 +368,8 @@ const WalkinPage = ({ bike = {} }) => {
                         }}
                     >
                         Check this if you allow your child to rent this bike
-                    </Checkbox>
-                    <Button bg="#405c4f" color="white" _hover={{ bg: "#2e4437" }}>
+                    </Checkbox> */}
+                    <Button bg="#405c4f" color="white" _hover={{ bg: "#2e4437" }} onClick={()=>handleRent()}>
                         RENT
                     </Button>
                 </Flex>
@@ -290,5 +377,66 @@ const WalkinPage = ({ bike = {} }) => {
         </Box>
     );
 };
+
+
+const convertTimeToSeconds = (timeString, additionalHours) => {
+    // Extract the AM/PM part and remove it from the time string
+const [time, modifier] = timeString.split(' ');
+
+// Split the time string into hours, minutes, and seconds
+let [hours, minutes] = time.split(':').map(Number);
+
+// Convert to 24-hour format
+if (modifier === 'PM' && hours < 12) {
+    hours += 12; // Convert PM hours
+} else if (modifier === 'AM' && hours === 12) {
+    hours = 0; // Convert 12 AM to 0 hours
+}
+
+// Calculate total seconds from the original time
+const totalSeconds = (hours * 3600) + (minutes * 60);
+
+// Add the additional hours converted to seconds
+const additionalSeconds = additionalHours * 3600;
+
+// Return the total time in seconds
+return totalSeconds + additionalSeconds;
+}
+
+function convertSecondsToTimeWithAMPM(totalSeconds) {
+    // Calculate hours, minutes, and seconds
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+    // Determine AM/PM and convert to 12-hour format
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const hourIn12Format = hours % 12 || 12; // Convert hour to 12-hour format
+
+    // Format minutes and seconds to always be two digits
+    const formattedMinutes = String(minutes).padStart(2, '0');
+
+    // Construct the time string
+    return `${hourIn12Format}:${formattedMinutes} ${ampm}`;
+}
+function getCurrentTimeInAMPM() {
+    const now = new Date(); // Get the current date and time
+
+    // Extract hours, minutes, and seconds
+    let hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    // Determine AM/PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    // Convert to 12-hour format
+    hours = hours % 12; // Convert to 12-hour format
+    hours = hours ? hours : 12; // The hour '0' should be '12'
+
+    // Format minutes to always be two digits
+    const formattedMinutes = String(minutes).padStart(2, '0');
+
+    // Construct the time string
+    return `${hours}:${formattedMinutes} ${ampm}`;
+}
 
 export default WalkinPage;

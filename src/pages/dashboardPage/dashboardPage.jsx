@@ -96,6 +96,16 @@ const DashboardPage = () => {
             isClosable: true,
         });
     };
+    const handleUnauthorized2 = () => {
+        toast({
+            title: 'Unauthorized',
+            description: 'You do not have permission to view this section.',
+            status: 'warning',
+            duration: 3000,
+            position: 'top',
+            isClosable: true,
+        });
+    };
 
     useEffect(() => {
         setSuperadmin(localStorage.getItem('isSAdmin'));
@@ -158,7 +168,7 @@ const DashboardPage = () => {
                     cardBgColor="#32BE9B"
                     imageBgColor="#2AAA8A"
                     buttonBgColor="#93C572"
-                    onClick={(superadmin === 'true') ? () => handleCardClick('Analytics') : () => handleUnauthorized()}
+                    onClick={(superadmin === 'true') ? () => handleCardClick('Analytics') : () => handleUnauthorized2()}
                     id='revCard'
                 />
                 <Card
@@ -258,7 +268,7 @@ const DashboardPage = () => {
                         roundedBottomLeft='35px'
                         roundedTopRight='20px'
                         cursor="pointer"
-                        onClick={(superadmin === 'true') ? () => handleCardClick('Analytics') : () => handleUnauthorized()}
+                        onClick={(superadmin === 'true') ? () => handleCardClick('Analytics') : () => handleUnauthorized2()}
                     >
                         <Box as='span' fontSize='sm'>View Details</Box>
                     </Center>
