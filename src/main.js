@@ -218,7 +218,14 @@ ipcMain.handle('sendEmail-Admin', async (event, data) => {
     console.error('Error sending email to admin:', error);
   }
 })
-
+ipcMain.handle('get-reservations-and-rented', async (event, data) => {
+  try {
+    const getResandRent = await axios.get(`${apiServer}/getReservationsAndRentedBikes`);
+    return getResandRent.data;
+  } catch (error) {
+    console.error('Error fetching reservations:', error);
+  }
+})
 ipcMain.handle('get-reservations', async (event, data) => {
   try {
     const getReservations = await axios.get(`${apiServer}/getReservations`);
@@ -278,4 +285,45 @@ ipcMain.handle('get-data-analytics', async (event, data) => {
     console.error('Error fetching analytics data:', error);
   }
 })
+
+ipcMain.handle('create-temp-acc', async (event, walkinInfo, walkinRentInfo) => {
+  try {
+    // Prepare the data to be sent to the server
+    const tempAccountData = {
+      name: walkinInfo.name,
+      phone: walkinInfo.phone,
+      email: walkinInfo.email,
+      username: walkinInfo.username,
+      password: walkinInfo.password,
+      age: walkinInfo.age
+    };
+
+    // Make the Axios POST request to create a temporary account
+    const tadRes = await axios.post(`${apiServer}/createTemp`, tempAccountData);
+    // Check if the account creation was successful
+    if (tadRes.data.isCreated) {
+      const tempRentData = {
+        name: walkinRentInfo.name,
+        phone: walkinRentInfo.phone,
+        email: walkinRentInfo.email,
+        bike_id: walkinRentInfo.bike_id,
+        duration: walkinRentInfo.duration,
+        timeofuse: walkinRentInfo.timeofuse,
+        returnTime: walkinRentInfo.returnTime,
+        totalBikeRentPrice: walkinRentInfo.totalBikeRentPrice
+      };
+
+      // Make the Axios POST request to insert rent data
+      const trdRes = await axios.post(`${apiServer}/insertRent`, tempRentData);
+
+      // Return the response data back to the renderer process
+      return trdRes.data; // Return the rent response data
+    } else {
+      throw new Error('Failed to create temporary account');
+    }
+  } catch (error) {
+    console.error('Error creating temporary account:', error);
+    throw error; // Propagate the error back to the renderer
+  }
+});
 

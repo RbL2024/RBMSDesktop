@@ -56,9 +56,16 @@ const WalkinPage = ({ bike = {} }) => {
         return <AvailabilityPage />; // Render the AvailabilityPage component
     }
 
+    const clearInputs = () => {
+        setFirstName('');
+        setLastName('');
+        setUsername('');
+        setEmail('');
+        setAge('');
+        setContactNumber('');
+    }
 
-
-    const handleRent = () => {
+    const handleRent = async () => {
         function tempPass(length) {
             let result = '';
             // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -98,7 +105,7 @@ const WalkinPage = ({ bike = {} }) => {
             totalBikeRentPrice: totalPrice
         }
 
-        console.log(walkinRentInfo);
+        // console.log(walkinRentInfo);
 
         if(firstName==="", lastName==="",username==="",email==="",contactNumber==="",age===""){
             toast({
@@ -111,6 +118,11 @@ const WalkinPage = ({ bike = {} }) => {
             });
             return;
         }
+
+        const cta = window.api.createTempAcc(walkinInfo, walkinRentInfo);
+        clearInputs();
+        console.log(cta);
+
     }
 
 

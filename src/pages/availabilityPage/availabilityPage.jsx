@@ -34,6 +34,7 @@ export default function AvailablityPage() {
         setError(null);
         try {
             const res = await window.api.fetchBikes();
+            console.log(res)
             setFetchedBikes(res);
         } catch (error) {
             console.error(error);
@@ -206,7 +207,7 @@ export default function AvailablityPage() {
                                             <Box boxSize='20px' bg='#E37383' rounded='md' />
                                         </Box>
                                         <Box w='100%' h='30px' bg='#A7C7E7' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px'>
-                                            <Text m={0}>{bike.customerInfo.c_username}</Text>
+                                            <Text m={0}>{bike.customerInfo && bike.customerInfo.c_username ? bike.customerInfo.c_username : bike.temporaryInfo.t_username}</Text>
                                             <Box boxSize='20px' bg='#4396BD' rounded='md' />
                                         </Box>
                                     </Box>

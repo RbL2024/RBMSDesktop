@@ -95,7 +95,7 @@ const Sidenav = () => {
                         <Link className={`nav-links ${activeLink === 'Reservation' ? 'active' : ''}`} href='#' h='10px' style={{ textDecoration: 'none' }} onClick={() => handleLinkClick('Reservation')}>
                             <Box className='nav-content' p='7px' display='flex' pl='20px'>
                                 <Icon as={RiTicket2Line} boxSize={6} mr={2} />
-                                <Text m='0' fontSize='16px' pt='2px'>Reservation</Text>
+                                <Text m='0' fontSize='16px' pt='2px'>Reservation/Walk-Ins</Text>
                             </Box>
                         </Link>
                     </Box>
@@ -111,7 +111,7 @@ const Sidenav = () => {
                         <Link className={`nav-links ${activeLink === 'Availability' ? 'active' : ''}`} href='#' h='10px' style={{ textDecoration: 'none' }} onClick={() => handleLinkClick('Availability')}>
                             <Box className='nav-content' p='7px' display='flex' pl='20px'>
                                 <Icon as={LuBike} boxSize={6} mr={2} />
-                                <Text m='0' fontSize='16px' pt='2px'>Availability</Text>
+                                <Text m='0' fontSize='16px' pt='2px'>Availability/Walkin Rent</Text>
                             </Box>
                         </Link>
                     </Box>

@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld("api", {
   ADMINcheck: (data) => ipcRenderer.invoke("check-duplicates", data),
   ADMINcreate: (data) => ipcRenderer.invoke("create-admin", data),
   ADMINsentemail: (data) => ipcRenderer.invoke("sendEmail-Admin", data),
+  getResandRent: () => ipcRenderer.invoke("get-reservations-and-rented"),
   getReservations: () => ipcRenderer.invoke("get-reservations"),
   getReservationsALL: () => ipcRenderer.invoke("get-reservations-all"),
   getReservationsFIVE: () => ipcRenderer.invoke("get-reservations-five"),
@@ -38,6 +39,7 @@ contextBridge.exposeInMainWorld("api", {
       document.head.appendChild(script);
     });
   },
+  createTempAcc:(walkinInfo, walkinRentInfo) => ipcRenderer.invoke("create-temp-acc", walkinInfo, walkinRentInfo),
 });
 
 ipcRenderer.on("account-found", (event, response) => {
