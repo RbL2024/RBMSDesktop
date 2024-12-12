@@ -488,7 +488,7 @@ export default function ReservationPage() {
                                                 right="10px"
                                                 backgroundColor={'#2ECC71'}
                                             >
-                                                RENTED, should returned by  ${renteds.returnTime}
+                                                RENTED, should returned by {renteds.returnTime}
 
                                             </Text>
                                         </Flex>
