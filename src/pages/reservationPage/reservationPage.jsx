@@ -192,11 +192,39 @@ export default function ReservationPage() {
         }
     };
 
+    const handleReturnWIN = async (rentId, bikeId) => {
+        const data = {
+            bikeId: bikeId,
+            bikeStatus: 'VACANT',
+        };
+
+        setLoadingId(`confirm-${rentId}`);
+
+        try {
+            const updateStat = await new Promise((resolve, reject) => {
+                window.api.updateToVacantWIN(rentId, data)
+                    .then(resolve)
+                    .catch(reject);
+            });
+            // You can update the state or perform additional actions here
+            // setGetRes(updateStat.data);
+        } catch (error) {
+            console.error('Error updating reservation status:', error);
+        } finally {
+            setLoadingId(null);
+        }
+    };
+
 
     const filteredReservations = getRes.filter((reservation) => {
         const matchesSearchTerm = reservation.bike_id.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter ? reservation.bikeStatus === statusFilter : true;
         return matchesSearchTerm && matchesStatus;
+    });
+
+    const filteredRentals = getRent.filter((rented) => {
+        const matchesSearchTerm = rented.bike_id.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesSearchTerm; // You can add status filtering if needed
     });
 
     return (
@@ -452,7 +480,7 @@ export default function ReservationPage() {
                         )
                         : (
                             <>
-                                {getRent.map((renteds, index) => (
+                                {filteredRentals.map((renteds, index) => (
                                     <Box
                                         key={index}
                                         bg={'#E2E2D5'}
@@ -587,7 +615,7 @@ export default function ReservationPage() {
                                                 backgroundColor="#20c997"
                                                 size="sm"
                                                 borderRadius={12}
-                                                onClick={() => handleReturn(renteds._id, renteds.bike_id)}
+                                                onClick={() => handleReturnWIN(renteds._id, renteds.bike_id)}
                                                 isLoading={loadingId === `confirm-${renteds._id}`}
                                                 loadingText="Confirming..."
                                             >

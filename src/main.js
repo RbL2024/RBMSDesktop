@@ -269,6 +269,15 @@ ipcMain.handle('status-to-vacant', async (event, reservationId, data) => {
     console.error('Error updating reservation:', error);
   }
 })
+ipcMain.handle('status-to-vacant-rented', async (event, rentId, data) => {
+  try {
+    const response = await axios.put(`${apiServer}/updateRentedBikeStatusToVacant/${rentId}`, data)
+    // console.log(response);  
+    return response.data;
+  } catch (error) {
+    console.error('Error updating reservation:', error);
+  }
+})
 ipcMain.handle('delete-bike', async (event, bikeId) => {
   try {
     const response = await axios.delete(`${apiServer}/deleteBike/${bikeId}`)

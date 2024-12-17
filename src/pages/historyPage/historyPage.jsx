@@ -106,7 +106,7 @@ export default function UserPage() {
                                 <Th>Name</Th>
                                 <Th>Email</Th>
                                 <Th>Bike ID</Th> 
-                                <Th>Date Reserved</Th>
+                                <Th>Date Reserved/Rented</Th>
                                 <Th>Contact No.</Th>
                                 <Th>Remarks</Th>
                             </Tr>
@@ -125,7 +125,7 @@ export default function UserPage() {
                                     </Td>
                                     <Td fontSize='sm'>{`${bike.email}`}</Td>
                                     <Td fontSize='sm'>{`${bike.bike_id}`}</Td> {/* Add the bike_id here */}
-                                    <Td fontSize='sm'>{formatDate(bike.reservation_date)}</Td>
+                                    <Td fontSize='sm'>{bike.reservation_date ? formatDate(bike.reservation_date) : formatDate(bike.rented_date)}</Td>
                                     <Td fontSize='sm'>{`${bike.phone}`}</Td>
                                     <Td fontSize='sm'>{`${bike.bikeStatus}`}</Td>
                                     

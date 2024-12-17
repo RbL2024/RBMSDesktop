@@ -121,7 +121,8 @@ const WalkinPage = ({ bike = {} }) => {
 
         const cta = window.api.createTempAcc(walkinInfo, walkinRentInfo);
         clearInputs();
-        console.log(cta);
+        setCurrentPage('availability');
+        // console.log(cta);
 
     }
 

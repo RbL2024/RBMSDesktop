@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld("api", {
   getReservationsFIVE: () => ipcRenderer.invoke("get-reservations-five"),
   updateToRent: (reservationId, data) => ipcRenderer.invoke("status-to-rent", reservationId, data),
   updateToVacant: (reservationId, data) => ipcRenderer.invoke("status-to-vacant", reservationId, data),
+  updateToVacantWIN: (rentId, data) => ipcRenderer.invoke("status-to-vacant-rented", rentId, data),
   deleteBike: (bikeId) => ipcRenderer.invoke('delete-bike', bikeId), 
   getDataAnalytics:()=>ipcRenderer.invoke("get-data-analytics"),
   loadGoogleMaps: () => {
