@@ -42,6 +42,7 @@ contextBridge.exposeInMainWorld("api", {
   },
   createTempAcc:(walkinInfo) => ipcRenderer.invoke("create-temp-acc", walkinInfo),
   insertTempRent:(walkinRentInfo) => ipcRenderer.invoke("insert-temp-rent", walkinRentInfo),
+  saveTempRent:(walkinInfo, walkinRentInfo) => ipcRenderer.invoke("create-temp-acc-and-insert-rent", walkinInfo, walkinRentInfo),
 });
 
 ipcRenderer.on("account-found", (event, response) => {
@@ -50,5 +51,9 @@ ipcRenderer.on("account-found", (event, response) => {
 
 ipcRenderer.on("bike-uploaded", (event, response) => {
   window.dispatchEvent(new CustomEvent("bike-uploaded", { detail: response }));
+});
+
+ipcRenderer.on("temp-acc-created", (event, response) => {
+  window.dispatchEvent(new CustomEvent("temp-acc-created", { detail: response }));
 });
 

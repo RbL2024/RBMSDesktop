@@ -98,7 +98,6 @@ export default function AvailablityPage() {
 
     const renderWalkInPage = () => (
         <WalkinPage bike={selectedBike} /> // Pass the selected bike data as a prop
-
     );
 
 

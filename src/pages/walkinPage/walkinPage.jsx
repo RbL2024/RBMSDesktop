@@ -20,7 +20,7 @@ import AvailabilityPage from '../availabilityPage/availabilityPage.jsx';
 
 
 
-
+const cta = window.api;
 
 const WalkinPage = ({ bike = {} }) => {
     const toast = useToast();
@@ -52,10 +52,6 @@ const WalkinPage = ({ bike = {} }) => {
         setCurrentPage('availability'); // Change the current page to availability
     };
 
-    if (currentPage === 'availability') {
-        return <AvailabilityPage />; // Render the AvailabilityPage component
-    }
-
     const clearInputs = () => {
         setFirstName('');
         setLastName('');
@@ -81,13 +77,13 @@ const WalkinPage = ({ bike = {} }) => {
         }
 
         const getcurrentTime = getCurrentTimeInAMPM();
-        const tor = convertSecondsToTimeWithAMPM(convertTimeToSeconds(getcurrentTime, duration));   
+        const tor = convertSecondsToTimeWithAMPM(convertTimeToSeconds(getcurrentTime, duration));
 
         const walkinInfo = {
             name: firstName + ' ' + lastName,
             username: username,
             password: tempPass(5),
-            phone: '0'+contactNumber,
+            phone: '0' + contactNumber,
             email: email,
             age: age,
             tExp: duration
@@ -95,7 +91,7 @@ const WalkinPage = ({ bike = {} }) => {
 
         const walkinRentInfo = {
             name: firstName + ' ' + lastName,
-            phone: '0'+contactNumber,
+            phone: '0' + contactNumber,
             email: email,
             bike_id: bike.bike_id,
             duration: duration,
@@ -105,7 +101,7 @@ const WalkinPage = ({ bike = {} }) => {
         }
 
 
-        if(firstName==="", lastName==="",username==="",email==="",contactNumber==="",age===""){
+        if (firstName === "", lastName === "", username === "", email === "", contactNumber === "", age === "") {
             toast({
                 title: 'Blank fields',
                 description: 'Please fill out all fields.',
@@ -118,16 +114,51 @@ const WalkinPage = ({ bike = {} }) => {
         }
 
         try {
-            const ctares = await window.api.createTempAcc(walkinInfo);
-            console.log(ctares.message);
+
+            const res = await cta.saveTempRent(walkinInfo, walkinRentInfo);
+            console.log(res);
+
         } catch (error) {
-            console.error('Error creating temporary account:', error);
-            throw error;
+            console.log('Error creating temporary account:', error);
         }
-        
+
     }
 
+    useEffect(() => {
+        const handleTempAccCreated = (event) => {
+            const res = event.detail;
+            console.log(res.created);
+            if (res.created) {
+                toast({
+                    title: res.message,
+                    status: 'success',
+                    duration: 2000,
+                    position: 'top',
+                    onCloseComplete: () => {
+                        clearInputs();
+                        setCurrentPage('availability');
+                    }
+                });
+            } else {
+                toast({
+                    title: res.message,
+                    status: 'error',
+                    duration: 2000,
+                    position: 'top',
+                });
+            }
+        };
 
+        window.addEventListener('temp-acc-created', handleTempAccCreated);
+
+        return () => {
+            window.removeEventListener('temp-acc-created', handleTempAccCreated);
+        };
+    }, []);
+
+    if (currentPage === 'availability') {
+        return <AvailabilityPage />; // Render the AvailabilityPage component
+    }
 
     return (
         <Box minH="100vh" p={6} display="flex" flexDirection="column" alignItems="center" marginRight={250}>
@@ -172,7 +203,7 @@ const WalkinPage = ({ bike = {} }) => {
                             w="70%"
                             size="md"
                             value={firstName}
-                            onChange={(e)=>setFirstName(e.target.value)}
+                            onChange={(e) => setFirstName(e.target.value)}
                         />
                     </Box>
                     <Box flex="1">
@@ -184,7 +215,7 @@ const WalkinPage = ({ bike = {} }) => {
                             w="70%"
                             size="md"
                             value={username}
-                            onChange={(e)=>setUsername(e.target.value)}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                     </Box>
                     <Box flex="1">
@@ -196,7 +227,7 @@ const WalkinPage = ({ bike = {} }) => {
                             w="70%"
                             size="md"
                             value={email}
-                            onChange={(e)=>setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </Box>
                 </Flex>
@@ -210,7 +241,7 @@ const WalkinPage = ({ bike = {} }) => {
                             w="70%"
                             size="md"
                             value={lastName}
-                            onChange={(e)=>setLastName(e.target.value)}
+                            onChange={(e) => setLastName(e.target.value)}
                         />
                     </Box>
                     <Box flex="1">
@@ -384,7 +415,7 @@ const WalkinPage = ({ bike = {} }) => {
                     >
                         Check this if you allow your child to rent this bike
                     </Checkbox> */}
-                    <Button bg="#405c4f" color="white" _hover={{ bg: "#2e4437" }} onClick={()=>handleRent()}>
+                    <Button bg="#405c4f" color="white" _hover={{ bg: "#2e4437" }} onClick={() => handleRent()}>
                         RENT
                     </Button>
                 </Flex>
@@ -396,26 +427,26 @@ const WalkinPage = ({ bike = {} }) => {
 
 const convertTimeToSeconds = (timeString, additionalHours) => {
     // Extract the AM/PM part and remove it from the time string
-const [time, modifier] = timeString.split(' ');
+    const [time, modifier] = timeString.split(' ');
 
-// Split the time string into hours, minutes, and seconds
-let [hours, minutes] = time.split(':').map(Number);
+    // Split the time string into hours, minutes, and seconds
+    let [hours, minutes] = time.split(':').map(Number);
 
-// Convert to 24-hour format
-if (modifier === 'PM' && hours < 12) {
-    hours += 12; // Convert PM hours
-} else if (modifier === 'AM' && hours === 12) {
-    hours = 0; // Convert 12 AM to 0 hours
-}
+    // Convert to 24-hour format
+    if (modifier === 'PM' && hours < 12) {
+        hours += 12; // Convert PM hours
+    } else if (modifier === 'AM' && hours === 12) {
+        hours = 0; // Convert 12 AM to 0 hours
+    }
 
-// Calculate total seconds from the original time
-const totalSeconds = (hours * 3600) + (minutes * 60);
+    // Calculate total seconds from the original time
+    const totalSeconds = (hours * 3600) + (minutes * 60);
 
-// Add the additional hours converted to seconds
-const additionalSeconds = additionalHours * 3600;
+    // Add the additional hours converted to seconds
+    const additionalSeconds = additionalHours * 3600;
 
-// Return the total time in seconds
-return totalSeconds + additionalSeconds;
+    // Return the total time in seconds
+    return totalSeconds + additionalSeconds;
 }
 
 function convertSecondsToTimeWithAMPM(totalSeconds) {

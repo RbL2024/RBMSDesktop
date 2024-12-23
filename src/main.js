@@ -297,12 +297,14 @@ ipcMain.handle('get-data-analytics', async (event, data) => {
 
 ipcMain.handle('create-temp-acc', async (event, walkinInfo) => {
   try {
-    // Validate input data
-    if (!walkinInfo) {
-      throw new Error('Invalid input data');
-    }
+
     const tadRes = await axios.post(`${apiServer}/createTemp`, walkinInfo);
-    return tadRes.data;
+    if (tadRes.data.isCreated) {
+      event.sender.send('temp-acc-created', {
+        created: true,
+        message: tadRes.data.message
+      })
+    }
     
   } catch (error) {
     console.error('Error creating temporary account:', error);
@@ -325,3 +327,31 @@ ipcMain.handle('insert-temp-rent', async (event, walkinRentInfo) => {
   }
 });
 
+ipcMain.handle('create-temp-acc-and-insert-rent', async (event, walkinInfo, walkinRentInfo ) => {
+  try {
+    // Create temporary account
+    const tadRes = await axios.post(`${apiServer}/createTemp`, walkinInfo);
+    if (tadRes.data.isCreated) {
+      event.sender.send('temp-acc-created', {
+        created: true,
+        message: tadRes.data.message
+      });
+
+      // Insert temporary rent
+      if (!walkinRentInfo) {
+        throw new Error('Invalid rent input data');
+      }
+      const trdRes = await axios.post(`${apiServer}/insertRent`, walkinRentInfo);
+      return trdRes.data; // Return the rent response data
+    } else {
+      event.sender.send('temp-acc-created', {
+        created: false,
+        message: tadRes.data.message
+      });
+      return;
+    }
+  } catch (error) {
+    console.error('Error in create-temp-acc-and-insert-rent:', error);
+    throw error;
+  }
+});
