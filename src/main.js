@@ -144,7 +144,7 @@ ipcMain.handle('find-account', async (event, data) => {
 ipcMain.handle('upload-bike', async (event, data) => {
   try {
     const result = await cloudinary.uploader.upload(data.i_bike_image, {
-      folder: 'bikeImages' // Optional: specify a folder in Cloudinary
+      folder: 'bikeImages' 
     });
 
     if (result) {
@@ -295,44 +295,33 @@ ipcMain.handle('get-data-analytics', async (event, data) => {
   }
 })
 
-ipcMain.handle('create-temp-acc', async (event, walkinInfo, walkinRentInfo) => {
+ipcMain.handle('create-temp-acc', async (event, walkinInfo) => {
   try {
-    // Prepare the data to be sent to the server
-    const tempAccountData = {
-      name: walkinInfo.name,
-      phone: walkinInfo.phone,
-      email: walkinInfo.email,
-      username: walkinInfo.username,
-      password: walkinInfo.password,
-      age: walkinInfo.age
-    };
-
-    // Make the Axios POST request to create a temporary account
-    const tadRes = await axios.post(`${apiServer}/createTemp`, tempAccountData);
-    // Check if the account creation was successful
-    if (tadRes.data.isCreated) {
-      const tempRentData = {
-        name: walkinRentInfo.name,
-        phone: walkinRentInfo.phone,
-        email: walkinRentInfo.email,
-        bike_id: walkinRentInfo.bike_id,
-        duration: walkinRentInfo.duration,
-        timeofuse: walkinRentInfo.timeofuse,
-        returnTime: walkinRentInfo.returnTime,
-        totalBikeRentPrice: walkinRentInfo.totalBikeRentPrice
-      };
-
-      // Make the Axios POST request to insert rent data
-      const trdRes = await axios.post(`${apiServer}/insertRent`, tempRentData);
-
-      // Return the response data back to the renderer process
-      return trdRes.data; // Return the rent response data
-    } else {
-      throw new Error('Failed to create temporary account');
+    // Validate input data
+    if (!walkinInfo) {
+      throw new Error('Invalid input data');
     }
+    const tadRes = await axios.post(`${apiServer}/createTemp`, walkinInfo);
+    return tadRes.data;
+    
   } catch (error) {
     console.error('Error creating temporary account:', error);
-    throw error; // Propagate the error back to the renderer
+    throw error;
+  }
+});
+ipcMain.handle('insert-temp-rent', async (event, walkinRentInfo) => {
+  try {
+    // Validate input data
+    if (!walkinRentInfo) {
+      throw new Error('Invalid input data');
+    }
+    // Make the Axios POST request to insert rent data
+    const trdRes = await axios.post(`${apiServer}/insertRent`, walkinRentInfo);
+    return trdRes.data; // Return the rent response data
+
+  } catch (error) {
+    console.error('Error inserting temporary rent:', error.message);
+    throw error;
   }
 });
 

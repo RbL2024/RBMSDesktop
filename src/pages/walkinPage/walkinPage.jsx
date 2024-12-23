@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Flex,
@@ -83,8 +83,6 @@ const WalkinPage = ({ bike = {} }) => {
         const getcurrentTime = getCurrentTimeInAMPM();
         const tor = convertSecondsToTimeWithAMPM(convertTimeToSeconds(getcurrentTime, duration));   
 
-
-        console.log(firstName, lastName, username, email, '0'+contactNumber, age, bike.bike_id);
         const walkinInfo = {
             name: firstName + ' ' + lastName,
             username: username,
@@ -92,6 +90,7 @@ const WalkinPage = ({ bike = {} }) => {
             phone: '0'+contactNumber,
             email: email,
             age: age,
+            tExp: duration
         }
 
         const walkinRentInfo = {
@@ -105,7 +104,6 @@ const WalkinPage = ({ bike = {} }) => {
             totalBikeRentPrice: totalPrice
         }
 
-        // console.log(walkinRentInfo);
 
         if(firstName==="", lastName==="",username==="",email==="",contactNumber==="",age===""){
             toast({
@@ -119,12 +117,16 @@ const WalkinPage = ({ bike = {} }) => {
             return;
         }
 
-        const cta = window.api.createTempAcc(walkinInfo, walkinRentInfo);
-        clearInputs();
-        setCurrentPage('availability');
-        // console.log(cta);
-
+        try {
+            const ctares = await window.api.createTempAcc(walkinInfo);
+            console.log(ctares.message);
+        } catch (error) {
+            console.error('Error creating temporary account:', error);
+            throw error;
+        }
+        
     }
+
 
 
     return (

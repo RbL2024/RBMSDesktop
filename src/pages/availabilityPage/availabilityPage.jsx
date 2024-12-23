@@ -34,7 +34,7 @@ export default function AvailablityPage() {
         setError(null);
         try {
             const res = await window.api.fetchBikes();
-            console.log(res)
+            // console.log(res)
             setFetchedBikes(res);
         } catch (error) {
             console.error(error);

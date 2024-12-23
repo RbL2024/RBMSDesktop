@@ -139,7 +139,7 @@ export default function UserPage() {
                                 <Th>Name</Th>
                                 <Th>Email</Th>
                                 <Th>Bike ID</Th> 
-                                <Th>Date Reserved</Th>
+                                <Th>Date Reserved/Rented</Th>
                                 <Th>Contact No.</Th>
                                 <Th>Remarks</Th>
                             </Tr>
