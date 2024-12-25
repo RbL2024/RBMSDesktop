@@ -18,7 +18,18 @@ import {
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import AvailabilityPage from '../availabilityPage/availabilityPage.jsx';
 
-
+function makeid(length) {
+    let result = "";
+    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return "MYRENT-" + result;
+  }
 
 const cta = window.api;
 
@@ -36,7 +47,7 @@ const WalkinPage = ({ bike = {} }) => {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState(makeid(3));
     const [email, setEmail] = useState("");
     const [age, setAge] = useState("");
     const handleInputChange = (e) => {
@@ -55,7 +66,7 @@ const WalkinPage = ({ bike = {} }) => {
     const clearInputs = () => {
         setFirstName('');
         setLastName('');
-        setUsername('');
+        setUsername(makeid(3));
         setEmail('');
         setAge('');
         setContactNumber('');
@@ -216,6 +227,7 @@ const WalkinPage = ({ bike = {} }) => {
                             size="md"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            disabled    
                         />
                     </Box>
                     <Box flex="1">

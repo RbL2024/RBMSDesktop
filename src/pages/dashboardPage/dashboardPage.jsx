@@ -205,7 +205,7 @@ const DashboardPage = () => {
             <Box display="flex" justifyContent="space-between" mt="50px">
                 <Box w="50%">
                     <Box display='flex' alignItems='center' justifyContent='space-between' w='500px'>
-                        <Box as="span" fontSize='2xl'>Reservations</Box>
+                        <Box as="span" fontSize='2xl'>Reservations Today</Box>
                         <Box as="span" fontSize='md' position='relative' display='flex' right='0' w='120px' cursor='pointer' onClick={() => handleCardClick('Reservation')}>View Details <Box as="span" w='5px' h='20px' bg='#355E3B' display='flex' ml='5px' /></Box>
                     </Box>
                     <TableContainer className='Acctable' maxH='325px' overflowY='auto'>
