@@ -50,17 +50,16 @@ const WalkinPage = ({ bike = {} }) => {
     const [username, setUsername] = useState(makeid(3));
     const [email, setEmail] = useState("");
     const [age, setAge] = useState("");
+
     const handleInputChange = (e) => {
         const value = e.target.value;
-
-        // Only allow numeric values and restrict to a maximum of 3 digits
         if (/^\d*$/.test(value) && value.length <= 2) {
             setAge(value);
         }
     };
 
     const handleAvailableBikeClick = () => {
-        setCurrentPage('availability'); // Change the current page to availability
+        setCurrentPage('availability'); 
     };
 
     const clearInputs = () => {
@@ -94,7 +93,7 @@ const WalkinPage = ({ bike = {} }) => {
             name: firstName + ' ' + lastName,
             username: username,
             password: tempPass(5),
-            phone: '0' + contactNumber,
+            phone: contactNumber,
             email: email,
             age: age,
             tExp: duration
@@ -156,6 +155,9 @@ const WalkinPage = ({ bike = {} }) => {
                     status: 'error',
                     duration: 2000,
                     position: 'top',
+                    onCloseComplete: () => {
+                        clearInputs();
+                    }
                 });
             }
         };
@@ -301,7 +303,7 @@ const WalkinPage = ({ bike = {} }) => {
                                 borderColor="#d9d9d9"
                                 size="md"
                                 type="tel"
-                                maxLength={10}
+                                maxLength={11}
                                 onChange={(e) => {
                                     // Allow only numbers
                                     const numericText = e.target.value.replace(/[^0-9]/g, '');

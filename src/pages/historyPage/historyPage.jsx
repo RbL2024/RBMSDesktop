@@ -120,16 +120,12 @@ export default function UserPage() {
                                     cursor="pointer" // Change cursor to pointer
                                 >
                                     <Td fontSize='sm'>{index + 1}</Td>
-                                    <Td fontSize='sm'>
-                                        {`${bike.name}`}
-                                    </Td>
+                                    <Td fontSize='sm'>{`${bike.name}`}</Td>
                                     <Td fontSize='sm'>{`${bike.email}`}</Td>
                                     <Td fontSize='sm'>{`${bike.bike_id}`}</Td> {/* Add the bike_id here */}
                                     <Td fontSize='sm'>{bike.reservation_date ? formatDate(bike.reservation_date) : formatDate(bike.rented_date)}</Td>
                                     <Td fontSize='sm'>{`${bike.phone}`}</Td>
                                     <Td fontSize='sm'>{`${bike.bikeStatus}`}</Td>
-                                    
-                                    
                                 </Tr>
                             ))}
                         </Tbody>

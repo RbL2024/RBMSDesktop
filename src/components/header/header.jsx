@@ -127,14 +127,34 @@ export default function header() {
             const response = await accountHandling.ADMINcheck(data);
             console.log(response.isFound)
             if (response.isFound) {
-                alert('already registered')
-                clearInputs();
+                toast({
+                    title: "Account already exists",
+                    description: "Please check your inputs",
+                    status: "error",
+                    position: "top",
+                    duration: 3000,
+                    isClosable: true,
+                    onCloseComplete: () => {
+                        clearInputs();
+                    }
+                })
             } else {
                 const cRes = await accountHandling.ADMINcreate(data);
                 if (cRes.created) {
 
-                    alert('Account created, please check your email for your credentials')
-                    clearInputs();
+                    toast({
+                        title: "Account created",
+                        description: "Account has been created successfully",
+                        status: "success",
+                        position: "top",
+                        duration: 3000,
+                        isClosable: true,
+                        onCloseComplete: () => {
+                            clearInputs();
+                            onDrawerClose();
+                        }
+                    })
+                    
                 }
             }
         } catch (error) {

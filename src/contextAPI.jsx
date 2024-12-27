@@ -4,7 +4,7 @@ const SharedContext = createContext();
 
 export const SharedProvider = ({ children }) => {
     const [activeLink, setActiveLink] = useState('Dashboard');
-    const [activeP, setActiveP] = useState('Analytics');
+    const [activeP, setActiveP] = useState('');
 
     return (
         <SharedContext.Provider value={{

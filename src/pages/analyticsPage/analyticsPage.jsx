@@ -63,11 +63,12 @@ export default function AnalyticsPage() {
     }, [datatype]);
 
     useEffect(() => {
-        const total = resData.reduce((sum, item) => sum + parseInt(item.totalBikeRentPrice, 10), 0);
-        const totalResFee = resData.reduce((sum, item) => sum + parseInt(item.totalReservationFee, 10), 0);
+        const filteredDataByYear = resData.filter(item => moment(item.date_gathered).year() === parseInt(selYear));
+        const total = filteredDataByYear.reduce((sum, item) => sum + parseInt(item.totalBikeRentPrice, 10), 0);
+        const totalResFee = filteredDataByYear.reduce((sum, item) => sum + parseInt(item.totalReservationFee, 10), 0);
         setTotalReservationFee(totalResFee);
         setTotalRevenue(total);
-    }, [datatype, resData]);
+    }, [datatype, resData, selYear]);
 
     //forFilter
     const months = moment.months();

@@ -49,7 +49,11 @@ export default function EditprofilePage() {
     const handleCancelEdit = () => {
         setIsEditing(false);
     }
-
+    const clearPASS = () => {
+        setNPassword('');
+        setConfirmNPassword('');
+        setOtp('');
+    }
     const loadUserInfo = async () => {
         try {
             const myID = localStorage.getItem('userID')
@@ -190,6 +194,9 @@ export default function EditprofilePage() {
                         status: 'success',
                         duration: 2000,
                         position: 'top-right',
+                        onCloseComplete: () => {
+                            clearPASS();
+                        }
                     })
                 }
             }
@@ -241,7 +248,7 @@ export default function EditprofilePage() {
                     </FormControl>
                     <FormControl mb='12px'>
                         <FormLabel m={0}>Email Address</FormLabel>
-                        <Input type='Email' bg='#FFFFFF' value={email} onChange={(e) => setEmail(e.target.value)} disabled={!isEditing} />
+                        <Input type='Email' bg='#FFFFFF' value={email} onChange={(e) => setEmail(e.target.value)} disabled={true} />
                     </FormControl>
                     <FormControl mb='12px'>
                         <FormLabel m={0}>New Password</FormLabel>
@@ -304,7 +311,7 @@ export default function EditprofilePage() {
 
 function makeid(length) {
     let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {

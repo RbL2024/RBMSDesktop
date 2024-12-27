@@ -180,27 +180,27 @@ const DashboardPage = () => {
                     buttonBgColor="#96DED1"
                     onClick={() => handleCardClick('Availability')}
                 />
-             <Box
-            position="absolute"
-            top="20%"
-            right="350px"
-            transform="translateY(-50%)"
-            background=" linear-gradient(225deg, #A7E4B0,#6BCF85, #4B9E6B , #032820)"
-            padding={3}
-            paddingLeft={5}
-            paddingRight={5}
-            borderRadius={20}
-            marginTop={-3}
-            animation="borderRotate 6s linear infinite" // Rotating border effect
-             cursor="grab"
-            _hover={{
-            boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.3), 0px 0px 20px rgba(3, 40, 32, 0.6)",
-             }}
-            >
-            <Image src={logo} boxSize="200px" alt="Logo" animation="bikeMotion 2s ease-in-out infinite" />
-            </Box>
+                <Box
+                    position="absolute"
+                    top="20%"
+                    right="350px"
+                    transform="translateY(-50%)"
+                    background=" linear-gradient(225deg, #A7E4B0,#6BCF85, #4B9E6B , #032820)"
+                    padding={3}
+                    paddingLeft={5}
+                    paddingRight={5}
+                    borderRadius={20}
+                    marginTop={-3}
+                    animation="borderRotate 6s linear infinite" // Rotating border effect
+                    cursor="grab"
+                    _hover={{
+                        boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.3), 0px 0px 20px rgba(3, 40, 32, 0.6)",
+                    }}
+                >
+                    <Image src={logo} boxSize="200px" alt="Logo" animation="bikeMotion 2s ease-in-out infinite" />
+                </Box>
 
-                
+
             </Box>
             <Box display="flex" justifyContent="space-between" mt="50px">
                 <Box w="50%">
@@ -238,7 +238,7 @@ const DashboardPage = () => {
                 </Box>
 
                 {/* Monthly Income Chart */}
-                <Box w="50%" h="320px" bg="#A8E6CF" p="10px" rounded="lg" shadow="md" textAlign="center" marginRight={300} marginLeft={100} borderRadius={20}>
+                <Box w="50%" h="320px" bg="#A8E6CF" p="10px" rounded="lg" shadow="md" textAlign="center" marginRight={300} marginLeft={100} borderRadius={20} position={'relative'}>
                     <Text fontSize="lg" fontWeight="bold" mb="10px">Monthly Income</Text>
                     <ResponsiveContainer width="100%" height="90%">
                         <LineChart data={incomeData}>
@@ -262,8 +262,8 @@ const DashboardPage = () => {
                         h='40px'
                         backgroundColor='#8A88B0'
                         position='absolute'
-                        bottom='340px' 
-                        right='290px'
+                        top={'-10px'}
+                        right={'-10px'}
                         shadow='lg'
                         roundedBottomLeft='35px'
                         roundedTopRight='20px'
