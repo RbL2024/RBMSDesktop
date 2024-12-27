@@ -37,7 +37,7 @@ export default function UserPage() {
         const gatherRes = async () => {
             try {
                 const res = await window.api.getReservationsALL();
-                console.log(res.records); 
+                // console.log(res.records); 
                 const records = res.records || [];
                   
                 setGetRes(records);
@@ -112,7 +112,7 @@ export default function UserPage() {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {getRes.map((bike,index) => (
+                            {getRes?.map((bike,index) => (
                                 <Tr
                                     key={index} 
                                     onClick={() => handleRowClick(index)} // Set selected row index on click

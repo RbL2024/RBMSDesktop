@@ -324,3 +324,21 @@ ipcMain.handle('create-temp-acc-and-insert-rent', async (event, walkinInfo, walk
     throw error;
   }
 });
+ipcMain.handle('get-reservation-data', async (event, data) => {
+  try {
+    const response = await axios.get(`${apiServer}/getReservationData`);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reservation data:', error);
+  }
+});
+ipcMain.handle('get-rented-data', async (event, data) => {
+  try {
+    const response = await axios.get(`${apiServer}/getRentData`);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching rent data:', error);
+  }
+});

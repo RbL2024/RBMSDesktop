@@ -1,317 +1,230 @@
-import React, { useState, useEffect } from "react";
-import { Box, Text, Grid, GridItem, useBreakpointValue, Select } from "@chakra-ui/react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import React, { use, useEffect } from "react";
+import { Box, Select, Text } from "@chakra-ui/react";
+import { Bar, Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement} from 'chart.js';
+import moment from 'moment';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 export default function AnalyticsPage() {
-    const [data, setData] = useState([]);
-    const [filteredData, setFilteredData] = useState([]);
-    const [adultBicycleSales, setAdultBicycleSales] = useState(0);
-    const [kidBicycleSales, setKidBicycleSales] = useState(0);
-    const [reservationFee, setReservationFee] = useState(0);
-    const [selectedMonth, setSelectedMonth] = useState("All Months");
+    const currMonth = moment().format('MM');
+    const currYear = moment().format('YYYY');
 
-    const monthlyReservationFee = {
-        "Jan": 300,
-        "Feb": 200,
-        "Mar": 600,
-        "Apr": 700,
-        "May": 500,
-        "Jun": 800,
-        "Jul": 600,
-        "Aug": 400,
-        "Sep": 300,
-        "Oct": 800,
-        "Nov": 300,
-        "Dec": 700
-    };
+    const [resData, setResData] = React.useState([]);
+    const [datatype, setDataType] = React.useState('Reservation');
+    const [selMonth, setSelMonth] = React.useState(currMonth);
+    const [selYear, setSelYear] = React.useState(currYear);
+    const [totalRevenue, setTotalRevenue] = React.useState(0);
+    const [totalReservationFee, setTotalReservationFee] = React.useState(0);
 
-    const daysInMonth = {
-        "Jan": 31,
-        "Feb": 28,
-        "Mar": 31,
-        "Apr": 30,
-        "May": 31,
-        "Jun": 30,
-        "Jul": 31,
-        "Aug": 31,
-        "Sep": 30,
-        "Oct": 31,
-        "Nov": 30,
-        "Dec": 31
-    };
-
-    const truncateMonth = (month) => {
-        const monthMap = {
-            January: "Jan",
-            February: "Feb",
-            March: "Mar",
-            April: "Apr",
-            May: "May",
-            June: "Jun",
-            July: "Jul",
-            August: "Aug",
-            September: "Sep",
-            October: "Oct",
-            November: "Nov",
-            December: "Dec",
-        };
-        return monthMap[month] || month;
-    };
+    const [bikeData, setbikeData] = React.useState([]);
 
     useEffect(() => {
-        // Example monthly sales data for adult and kid bicycles
-        const monthlyData = [
-            { month: "January", adultSales: 300, kidSales: 450 },
-            { month: "February", adultSales: 200, kidSales: 250 },
-            { month: "March", adultSales: 300, kidSales: 50 },
-            { month: "April", adultSales: 400, kidSales: 300 },
-            { month: "May", adultSales: 400, kidSales: 400 },
-            { month: "June", adultSales: 600, kidSales: 500 },
-            { month: "July", adultSales: 700, kidSales: 600 },
-            { month: "August", adultSales: 800, kidSales: 700 },
-            { month: "September", adultSales: 900, kidSales: 800 },
-            { month: "October", adultSales: 2000, kidSales: 900 },
-            { month: "November", adultSales: 100, kidSales: 50 },
-            { month: "December", adultSales: 1200, kidSales: 1100 },
-        ];
+        const fetchData = async () => {
+            try {
+                const resdata = await window.api.getResData();
+                const rentdata = await window.api.getRentData();
+                const gatheredData = [...resdata, ...rentdata];
+                
 
-        // Truncate month names
-        const truncatedData = monthlyData.map((item) => ({
-            ...item,
-            month: truncateMonth(item.month),
-        }));
+                const bikeTypeCounts = gatheredData.reduce((acc, item) => {
+                    acc[item.bike_type] = (acc[item.bike_type] || 0) + 1;
+                    return acc;
+                }, {});
 
-        setData(truncatedData);
-        setFilteredData(truncatedData); // Initially show all months
-
-    }, []);
-
-    useEffect(() => {
-        if (selectedMonth === "All Months") {
-            setFilteredData(data);
-
-            // Recalculate total sales for all months
-            const totalAdultSales = data.reduce((acc, item) => acc + item.adultSales, 0);
-            setAdultBicycleSales(totalAdultSales);
-
-            const totalKidSales = data.reduce((acc, item) => acc + item.kidSales, 0);
-            setKidBicycleSales(totalKidSales);
-
-            // Calculate total reservation fee for all months
-            const totalReservationFee = Object.values(monthlyReservationFee).reduce((acc, value) => acc + value, 0);
-            setReservationFee(totalReservationFee); // Set total reservation fee
-        } else {
-            const filtered = data.filter((item) => item.month === selectedMonth);
-
-            // Split sales into days for the selected month
-            const daysInSelectedMonth = daysInMonth[selectedMonth];
-            const totalAdultSales = filtered[0].adultSales / daysInSelectedMonth;
-            const totalKidSales = filtered[0].kidSales / daysInSelectedMonth;
-            const totalReservationFee = monthlyReservationFee[selectedMonth] / daysInSelectedMonth;
-
-            // Randomize the daily sales data for the selected month
-            const dailyData = Array.from({ length: daysInSelectedMonth }, (_, index) => {
-                const randomMultiplier = 0.9 + Math.random() * 0.2; // Random factor between 0.9 and 1.1
-                return {
-                    day: `Day ${index + 1}`,
-                    adultSales: totalAdultSales * randomMultiplier,
-                    kidSales: totalKidSales * randomMultiplier,
-                    reservationFee: totalReservationFee * randomMultiplier,
-                };
-            });
-
-            setFilteredData(dailyData);
-            setAdultBicycleSales(totalAdultSales * daysInSelectedMonth);
-            setKidBicycleSales(totalKidSales * daysInSelectedMonth);
-            setReservationFee(totalReservationFee * daysInSelectedMonth);
+                setbikeData(bikeTypeCounts);
+                
+            } catch (error) {
+                console.error(error);
+            }
         }
-    }, [selectedMonth, data]);
+        fetchData();
+    }, []);
+    
+    useEffect(() => {
+        const getResData = async () => {
+            try {
+                if (datatype === 'Reservation') {
+                    const response = await window.api.getResData();
+                    // console.log(response);
+                    return setResData(response);
+                }
+                if (datatype === 'Walk-in') {
+                    const response = await window.api.getRentData();
+                    // console.log(response);
+                    return setResData(response);
+                }
+                // setResData(response);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        getResData();
+    }, [datatype]);
 
-    // Combine total adult and kid bicycle sales into rental sales
-    const rentalSales = adultBicycleSales + kidBicycleSales;
+    useEffect(() => {
+        const total = resData.reduce((sum, item) => sum + parseInt(item.totalBikeRentPrice, 10), 0);
+        const totalResFee = resData.reduce((sum, item) => sum + parseInt(item.totalReservationFee, 10), 0);
+        setTotalReservationFee(totalResFee);
+        setTotalRevenue(total);
+    }, [datatype, resData]);
 
-    // Pie chart data for Reservation Fee and Rental Sales
-    const pieData = [
-        { name: "Reservation Fee", value: reservationFee },
-        { name: "Rental Sales", value: rentalSales },
+    //forFilter
+    const months = moment.months();
+    const yearsSet = new Set(resData.map(item => moment(item.date_gathered).year()));
+    const currentYear = moment().year();
+    const years = Array.from(yearsSet).filter(year => year <= currentYear).sort((a, b) => b - a);
+
+    //forChart
+    const month = selMonth;
+    const year = selYear;
+    const days = moment(`${year}-${month}`, 'YYYY-MM').daysInMonth();
+    const daysInMonth = [];
+    for (let i = 1; i <= days; i++) {
+        daysInMonth.push(i);
+    }
+
+    const filteredData = resData.filter(item => {
+        const date = moment(item.date_gathered);
+        return date.month() + 1 === parseInt(month) && date.year() === parseInt(year);
+    });
+
+    const dataByDay = daysInMonth.map(day => {
+        const dayData = filteredData.filter(item => moment(item.date_gathered).date() === day);
+        const totalForDay = dayData.reduce((sum, item) => sum + parseInt(item.totalBikeRentPrice, 10), 0);
+        return totalForDay;
+    });
+
+    const dataByDayResFee = daysInMonth.map(day => {
+        const dayData = filteredData.filter(item => moment(item.date_gathered).date() === day);
+        const totalForDay = dayData.reduce((sum, item) => sum + parseInt(item.totalReservationFee, 10), 0);
+        return totalForDay;
+    });
+
+    const datasets = [
+        {
+            label: `${datatype}`,
+            data: dataByDay,
+            fill: false,
+            backgroundColor: 'rgb(209, 230, 28)',
+            borderColor: 'rgb(121, 133, 18)',
+        }
     ];
 
-    const isMobile = useBreakpointValue({ base: true, md: false });
+    if (datatype === 'Reservation') {
+        datasets.push({
+            label: `Reservation Fee`,
+            data: dataByDayResFee,
+            fill: false,
+            backgroundColor: 'rgb(183, 28, 230)',
+            borderColor: 'rgb(89, 17, 110)',
+        });
+    }
+
+    const dataByMonth = {
+        labels: daysInMonth,
+        datasets: datasets,
+    }
+    const options = {
+        scales: {
+            x: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Days of the Month '
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Total Bike Rent Price'
+                }
+            }
+        }
+    };
+
+
+
+    //doughnut
+    const doughnutData = {
+        labels: ['Adult Bike','Kids Bike'],
+        datasets: [
+            {
+                data: Object.values(bikeData), // Replace with your actual data variables
+                backgroundColor: ['#FF6384', '#36A2EB'],
+                hoverBackgroundColor: ['#FF6384', '#36A2EB']
+            }
+        ]
+    };
+    
+    const doughnutOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'left',
+                labels: {
+                    font: {
+                        size: 18,
+                        family: 'Arial', 
+                    },
+                    padding: 20,
+                }
+            },
+            title: {
+                display: true,
+                text: 'Bike Types Distribution'
+            }
+        }
+    };
 
     return (
-        <Box p={4} bg="#E2E2D5" borderRadius="15px" boxShadow="lg" width="100%">
-            {/* Dropdown to select month */}
-            <Box mb={4}>
-                <Text fontSize="lg" fontWeight="bold" color="#4A6274" mb={2}>
-                    Filter by Month
-                </Text>
-                <Select
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    bg="#F1FFEB"
-                    borderRadius="md"
-                    width="200px"
-                >
-                    <option value="All Months">All Months</option>
-                    <option value="Jan">January</option>
-                    <option value="Feb">February</option>
-                    <option value="Mar">March</option>
-                    <option value="Apr">April</option>
-                    <option value="May">May</option>
-                    <option value="Jun">June</option>
-                    <option value="Jul">July</option>
-                    <option value="Aug">August</option>
-                    <option value="Sep">September</option>
-                    <option value="Oct">October</option>
-                    <option value="Nov">November</option>
-                    <option value="Dec">December</option>
-                </Select>
+        <Box p={4} bg="#E2E2D5" borderRadius="15px" boxShadow="lg" w='975px' h='620px'>
+            <Box display='flex' justifyContent='flex-end' mb='20px' alignContent={'center'}>
+                <Box display='flex' gap='10px'>
+                    <Text fontSize={'24px'}>filters:</Text>
+                </Box>
+                <Box display='flex' gap='10px'>
+                    <Select w='200px' bg='white' defaultValue={moment().format('MMMM')} borderRadius='5px' onChange={(e) => {
+                        const monthNumber = moment().month(e.target.value).format('MM');
+                        setSelMonth(monthNumber);
+                    }}>
+                        {months.map((month) => (
+                            <option key={month} value={month}>{month}</option>
+                        ))}
+                    </Select>
+                    <Select w='200px' bg='white' defaultValue={moment().format('YYYY')} borderRadius='5px' onChange={(e) => setSelYear(e.target.value)}>
+                        {years.map((year) => (
+                            <option key={year} value={year}>{year}</option>
+                        ))}
+                    </Select>
+                    <Select w='200px' bg='white' borderRadius='5px' onChange={(e) => setDataType(e.target.value)}>
+                        <option value="Reservation">Reservation</option>
+                        <option value="Walk-in">Walk-in</option>
+                    </Select>
+                </Box>
             </Box>
-
-            {/* Grid layout for statistics */}
-            <Grid templateColumns={isMobile ? "1fr" : "repeat(5, 1fr)"} gap={6}>
-                <GridItem
-                    bg="#B2AC88"
-                    borderRadius="md"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    width="200px"
-                >
-                    <Text fontSize="lg" color="#2C3E50" fontWeight="bold">
-                        Adult Bicycle Sales
-                    </Text>
-                    <Text fontSize="2xl" fontWeight="700">
-                        ₱ {adultBicycleSales.toLocaleString()}
-                    </Text>
-                </GridItem>
-
-                <GridItem
-                    bg="#7BBF6A"
-                    p={5}
-                    borderRadius="md"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    width="200px"
-                >
-                    <Text fontSize="lg" color="#2C3E50" fontWeight="bold">
-                        Kid Bicycle Sales
-                    </Text>
-                    <Text fontSize="2xl" fontWeight="700">
-                        ₱ {kidBicycleSales.toLocaleString()}
-                    </Text>
-                </GridItem>
-
-                {/* Pie Chart showing Reservation Fee vs Rental Sales */}
-                <GridItem
-                    bg="#F5F1E1"
-                    p={4}
-                    borderRadius="md"
-                    display="flex"
-                    flexDirection="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    width="520px"
-                    gap={4}
-                >
-                    {/* Pie chart on the Left */}
-                    <Box position="relative" display="inline-block">
-                        <PieChart width={isMobile ? 200 : 200} height={isMobile ? 200 : 170}>
-                            <Pie
-                                data={pieData}
-                                dataKey="value"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={isMobile ? 50 : 50}
-                                innerRadius={isMobile ? 30 : 40}
-                                fill="#C85050 "
-                                paddingAngle={5}
-                                label
-                            >
-                                <Cell fill="#B57D7C" />
-                                <Cell fill="#96B579" />
-                            </Pie>
-
-                            {/* Adding "SALES" label in the center */}
-                            <text
-                                x="50%"
-                                y="50%"
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                                fontSize={isMobile ? "13px" : "13px"}
-                                fill="#4A6274"
-                                fontWeight="bold"
-                            >
-                                SALES
-                            </text>
-                        </PieChart>
-                    </Box>
-
-                    {/* Text with Info on the Right */}
+            <Box display='flex' justifyContent='flex-start' gap='20px' w={'100%'}>
+                <Box w='25%' h='175px' bg='white' borderRadius='15px' boxShadow='lg' display='flex' flexDirection='column' justifyContent='space-between' p={4}>
                     <Box>
-                        <Text  ext fontSize="md" fontWeight="bold" color="#4A6274">
-                            Reservation Fee: ₱ {reservationFee.toLocaleString()}
-                        </Text>
-                        <Text fontSize="md" fontWeight="bold" color="#4A6274">
-                            Rental Sales: ₱ {rentalSales.toLocaleString()}
-                        </Text>
+                        <Text fontSize='24px' textAlign='center' m={0}>Total Revenue </Text>
+                        <Text fontSize='18px' textAlign='center' m={0}>({datatype})</Text>
                     </Box>
-                </GridItem>
-            </Grid>
-
-            {/* Line Chart for Monthly Sales Data */}
-            <Box mt={3} bg="#A8E6CF" p={5} borderRadius="md" boxShadow="sm" marginRight={250}>
-                <Box display="flex" justifyContent="center" mb={4}>
-                    <Text fontSize="md" fontWeight="bold" color="#4A6274">
-                        Monthly Sales Data
-                    </Text>
+                    <Text fontSize='24px' textAlign='center' m={0}>&#8369; {totalRevenue}</Text>
                 </Box>
-
-             
-                <Box overflowX="auto" maxWidth="100%">
-                    <ResponsiveContainer width="100%" height={isMobile ? 100 : 200}>
-                        <LineChart data={filteredData}>
-                            <CartesianGrid strokeDasharray="5 5" />
-                            <XAxis
-                                dataKey={selectedMonth === "All Months" ? "month" : "day"} // Show month or day
-                                stroke="#4A6274"
-                                tick={{ fontSize: isMobile ? "10px" : "12px" }}
-                                tickFormatter={(tick) => tick} // Display day or month
-                            />
-                            <YAxis
-                                stroke="#4A6274"
-                                tick={{ fontSize: isMobile ? "10px" : "12px" }}
-                                tickFormatter={(value) => `₱ ${value.toLocaleString()}`}
-                            />
-                            <Tooltip
-                                labelFormatter={(label) => `${label}`}
-                                formatter={(value) => `Sales: ₱ ${value.toLocaleString()}`}
-                                contentStyle={{
-                                    borderRadius: "8px",
-                                }}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="adultSales"
-                                stroke="#B2AC88"
-                                strokeWidth={2}
-                                activeDot={{ r: 6 }}
-                                dot={true}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="kidSales"
-                                stroke="#7BBF6A"
-                                strokeWidth={2}
-                                activeDot={{ r: 6 }}
-                                dot={true}
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
+                <Box w='25%' h='175px' bg='white' borderRadius='15px' boxShadow='lg' display='flex' flexDirection='column' justifyContent='space-between' p={4}>
+                    <Box>
+                        <Text fontSize='24px' textAlign='center' m={0}>Total Reservation Fees</Text>
+                    </Box>
+                    <Text fontSize='24px' textAlign='center' m={0}>&#8369; {totalReservationFee ? `${totalReservationFee}` : 'N/A'}</Text>
                 </Box>
+                <Box w='50%' h='175px' bg='white' borderRadius='15px' boxShadow='lg'>
+                    <Doughnut data={doughnutData} options={doughnutOptions}/>
+                </Box>
+            </Box>
+            <Box bg='#EEE0FF' borderRadius='15px' mt='20px'>
+                <Bar data={dataByMonth} options={options} height={100} />
             </Box>
         </Box>
     );
