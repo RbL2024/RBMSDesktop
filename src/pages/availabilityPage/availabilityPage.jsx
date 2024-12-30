@@ -150,88 +150,96 @@ export default function AvailablityPage() {
                         </Box>
                     </Box>
                     <Grid templateColumns='repeat(4, 1fr)' gap={'30px'}>
-                        {fetchedBikes.map((bike) => (
-                            <GridItem
-                                key={bike.bike_id}
-                                w='175px'
-                                h='150px'
-                                bg='#FFFFFF'
-                                rounded='2xl'
-                                shadow='lg'
-                                p='10px'
-                                pos='relative'
-                            >
-                                {/* IMAGE CLICK HANDLER */}
-                                <Box position="absolute" top="0" left="0" right="0" bottom="0" zIndex="0">
-                                    <img
-                                        src={bike.bike_image_url} // Assuming bike.bike_image_url contains the URL of the image
-                                        alt={`Bike ${bike.bike_id}`}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'fill',
-                                            opacity: bike.bike_status === "VACANT" ? '0.8' : '0.4', // Lower opacity for VACANT bikes
-                                            borderRadius: '12px',
-                                            cursor: bike.bike_status !== "VACANT" ? 'not-allowed' : 'pointer', // Not-allowed for non-VACANT bikes
-                                        }}
-                                        onClick={() => {
-                                            if (bike.bike_status === "VACANT") {
-                                                handleVacantBikeClick(bike); // Handle the click only if the bike is VACANT
-                                            }
-                                        }}
-                                    />
+                        {
+                            fetchedBikes.length === 0 ?
+                                <Box display='flex' justifyContent='center' alignItems='center' w='100%' h='100%'>
+                                    <Text fontSize={32} >No bikes available</Text>
                                 </Box>
-                                <Box display='flex' justifyContent='space-between' alignItems='center'>
-                                    <Text textAlign='center' m='0'>{bike.bike_id}</Text>
-                                    <IconButton
-                                        aria-label='Remove bike'
-                                        icon={<CloseIcon />}
-                                        size='sm'
-                                        variant='ghost'
-                                        colorScheme='red'
-                                        onClick={() => {
-                                            if (superadmin === 'true') {
-                                                setBikeIdToDelete(bike.bike_id); // Set bike ID to delete
-                                                onOpen();
-                                            } else {
-                                                handleUnauthorized();
-                                            }
-                                        }}
-                                    />
-                                </Box>
-                                {bike.bike_status === 'RENTED' ? (
-                                    <Box pos='relative' mt='25%'>
-                                        <Box w='100%' h='30px' bg='#F8C8DC' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
-                                            <Text m={0}>Rented</Text>
-                                            <Box boxSize='20px' bg='#E37383' rounded='md' />
+                                :
+                                fetchedBikes.map((bike) => (
+                                    <GridItem
+                                        key={bike.bike_id}
+                                        w='175px'
+                                        h='150px'
+                                        bg='#FFFFFF'
+                                        rounded='2xl'
+                                        shadow='lg'
+                                        p='10px'
+                                        pos='relative'
+                                    >
+                                        {/* IMAGE CLICK HANDLER */}
+                                        <Box position="absolute" top="0" left="0" right="0" bottom="0" zIndex="0">
+                                            <img
+                                                src={bike.bike_image_url} // Assuming bike.bike_image_url contains the URL of the image
+                                                alt={`Bike ${bike.bike_id}`}
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'fill',
+                                                    opacity: bike.bike_status === "VACANT" ? '0.8' : '0.4', // Lower opacity for VACANT bikes
+                                                    borderRadius: '12px',
+                                                    cursor: bike.bike_status !== "VACANT" ? 'not-allowed' : 'pointer', // Not-allowed for non-VACANT bikes
+                                                }}
+                                                onClick={() => {
+                                                    if (bike.bike_status === "VACANT") {
+                                                        handleVacantBikeClick(bike); // Handle the click only if the bike is VACANT
+                                                    }
+                                                }}
+                                            />
                                         </Box>
-                                        <Box w='100%' h='30px' bg='#A7C7E7' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px'>
-                                            <Text m={0}>{bike.customerInfo && bike.customerInfo.c_username ? bike.customerInfo.c_username : bike.temporaryInfo.t_username}</Text>
-                                            <Box boxSize='20px' bg='#4396BD' rounded='md' />
+                                        <Box display='flex' justifyContent='space-between' alignItems='center'>
+                                            <Text textAlign='center' m='0'>{bike.bike_id}</Text>
+                                            <IconButton
+                                                aria-label='Remove bike'
+                                                icon={<CloseIcon />}
+                                                size='sm'
+                                                variant='ghost'
+                                                colorScheme='red'
+                                                onClick={() => {
+                                                    if (superadmin === 'true') {
+                                                        setBikeIdToDelete(bike.bike_id); // Set bike ID to delete
+                                                        onOpen();
+                                                    } else {
+                                                        handleUnauthorized();
+                                                    }
+                                                }}
+                                            />
                                         </Box>
-                                    </Box>
-                                ) : bike.bike_status === 'RESERVED' ? (
-                                    <Box pos='relative' mt='46%'>
-                                        <Box w='100%' h='30px' bg='#f9f871' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
-                                            <Text m={0} width='100%' textAlign='center'>RESERVED</Text>
-                                        </Box>
-                                    </Box>
-                                ) : bike.bike_status === 'VACANT' ? (
-                                    <Box pos='relative' mt='46%'>
-                                        <Box w='100%' h='30px' bg='#939393' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
-                                            <Text m={0} width='100%' textAlign='center' onClick={() => handleVacantBikeClick(bike)} cursor='pointer'>
-                                                VACANT
-                                            </Text>
-                                        </Box>
-                                    </Box>
-                                ) : (
-                                    <Box>
-                                        <Text m={0} width='100%' textAlign='center'>UNKNOWN STATUS</Text>
-                                    </Box>
-                                )}
-                            </GridItem>
+                                        {bike.bike_status === 'RENTED' ? (
+                                            <Box pos='relative' mt='25%'>
+                                                <Box w='100%' h='30px' bg='#F8C8DC' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
+                                                    <Text m={0}>Rented</Text>
+                                                    <Box boxSize='20px' bg='#E37383' rounded='md' />
+                                                </Box>
+                                                <Box w='100%' h='30px' bg='#A7C7E7' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px'>
+                                                    <Text m={0}>{bike.customerInfo && bike.customerInfo.c_username ? bike.customerInfo.c_username : bike.temporaryInfo.t_username}</Text>
+                                                    <Box boxSize='20px' bg='#4396BD' rounded='md' />
+                                                </Box>
+                                            </Box>
+                                        ) : bike.bike_status === 'RESERVED' ? (
+                                            <Box pos='relative' mt='46%'>
+                                                <Box w='100%' h='30px' bg='#f9f871' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
+                                                    <Text m={0} width='100%' textAlign='center'>RESERVED</Text>
+                                                </Box>
+                                            </Box>
+                                        ) : bike.bike_status === 'VACANT' ? (
+                                            <Box pos='relative' mt='46%'>
+                                                <Box w='100%' h='30px' bg='#939393' rounded='md' display='flex' alignItems='center' justifyContent='space-between' p='10px' mb='5px'>
+                                                    <Text m={0} width='100%' textAlign='center' onClick={() => handleVacantBikeClick(bike)} cursor='pointer'>
+                                                        VACANT
+                                                    </Text>
+                                                </Box>
+                                            </Box>
+                                        ) : (
+                                            <Box>
+                                                <Text m={0} width='100%' textAlign='center'>UNKNOWN STATUS</Text>
+                                            </Box>
+                                        )}
+                                    </GridItem>
 
-                        ))}
+                                ))
+
+                        }
                     </Grid>
                 </Box>
 

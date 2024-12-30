@@ -63,6 +63,7 @@ export default function UserPage() {
     }, [])
 
     const handleSelectChange = (event) => {
+        setFetchedData([]);
         setSelectedAccountType(event.target.value);
         // console.log("Selected Account Type:", event.target.value);
     };
@@ -112,7 +113,11 @@ export default function UserPage() {
                         <Tbody>
                             {
                                 selectedAccountType === 'User-Accounts'
-                                    ? fetchedData.map((admin, index) => (
+                                    ? fetchedData.length === 0?
+                                    <Tr>
+                                        <Td colSpan='5' textAlign='center'>No User Accounts , press Apply to refresh</Td>
+                                    </Tr>
+                                    :fetchedData.map((admin, index) => (
                                         <Tr
                                             key={index}
                                             onClick={() => handleRowClick(index)}
@@ -134,8 +139,14 @@ export default function UserPage() {
                                             <Td fontSize='sm'>{admin.c_phone || 'N/A'}</Td>
                                         </Tr>
                                     ))
+                                    
                                     : selectedAccountType === 'Admin-Accounts'
-                                        ? fetchedData.map((admin, index) => (
+                                        ? 
+                                        fetchedData.length === 0?
+                                        <Tr>
+                                            <Td colSpan='5' textAlign='center'>No Admin Accounts , press Apply to refresh</Td>
+                                        </Tr>
+                                        :fetchedData.map((admin, index) => (
                                             <Tr
                                                 key={index}
                                                 onClick={() => handleRowClick(index)}

@@ -1,7 +1,7 @@
 import React, { use, useEffect } from "react";
 import { Box, Select, Text } from "@chakra-ui/react";
 import { Bar, Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import moment from 'moment';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -25,7 +25,7 @@ export default function AnalyticsPage() {
                 const resdata = await window.api.getResData();
                 const rentdata = await window.api.getRentData();
                 const gatheredData = [...resdata, ...rentdata];
-                
+
 
                 const bikeTypeCounts = gatheredData.reduce((acc, item) => {
                     acc[item.bike_type] = (acc[item.bike_type] || 0) + 1;
@@ -33,14 +33,17 @@ export default function AnalyticsPage() {
                 }, {});
 
                 setbikeData(bikeTypeCounts);
-                
+
             } catch (error) {
                 console.error(error);
             }
         }
         fetchData();
+        const intervalId = setInterval(fetchData, 5000); // 5 seconds interval
+
+        return () => clearInterval(intervalId);
     }, []);
-    
+
     useEffect(() => {
         const getResData = async () => {
             try {
@@ -60,6 +63,9 @@ export default function AnalyticsPage() {
             }
         }
         getResData();
+        const intervalId = setInterval(getResData, 5000);
+
+        return () => clearInterval(intervalId);
     }, [datatype]);
 
     useEffect(() => {
@@ -149,7 +155,7 @@ export default function AnalyticsPage() {
 
     //doughnut
     const doughnutData = {
-        labels: ['Adult Bike','Kids Bike'],
+        labels: ['Adult Bike', 'Kids Bike'],
         datasets: [
             {
                 data: Object.values(bikeData), // Replace with your actual data variables
@@ -158,7 +164,7 @@ export default function AnalyticsPage() {
             }
         ]
     };
-    
+
     const doughnutOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -168,7 +174,7 @@ export default function AnalyticsPage() {
                 labels: {
                     font: {
                         size: 18,
-                        family: 'Arial', 
+                        family: 'Arial',
                     },
                     padding: 20,
                 }
@@ -221,7 +227,7 @@ export default function AnalyticsPage() {
                     <Text fontSize='24px' textAlign='center' m={0}>&#8369; {totalReservationFee ? `${totalReservationFee}` : 'N/A'}</Text>
                 </Box>
                 <Box w='50%' h='175px' bg='white' borderRadius='15px' boxShadow='lg'>
-                    <Doughnut data={doughnutData} options={doughnutOptions}/>
+                    <Doughnut data={doughnutData} options={doughnutOptions} />
                 </Box>
             </Box>
             <Box bg='#EEE0FF' borderRadius='15px' mt='20px'>

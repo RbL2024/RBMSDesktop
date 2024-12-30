@@ -25,12 +25,24 @@ function makeid(length) {
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
     }
     return "MYRENT-" + result;
+}
+function makeRentID(length) {
+    let result = '';
+    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters = '0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+    }
+    return 'RENTID-' + result;
   }
-
 const cta = window.api;
 
 const WalkinPage = ({ bike = {} }) => {
@@ -59,7 +71,7 @@ const WalkinPage = ({ bike = {} }) => {
     };
 
     const handleAvailableBikeClick = () => {
-        setCurrentPage('availability'); 
+        setCurrentPage('availability');
     };
 
     const clearInputs = () => {
@@ -88,8 +100,9 @@ const WalkinPage = ({ bike = {} }) => {
 
         const getcurrentTime = getCurrentTimeInAMPM();
         const tor = convertSecondsToTimeWithAMPM(convertTimeToSeconds(getcurrentTime, duration));
-
+        const rentID = makeRentID(5);
         const walkinInfo = {
+            rent_number: rentID,
             name: firstName + ' ' + lastName,
             username: username,
             password: tempPass(5),
@@ -100,6 +113,7 @@ const WalkinPage = ({ bike = {} }) => {
         }
 
         const walkinRentInfo = {
+            rent_number: rentID,
             name: firstName + ' ' + lastName,
             phone: '0' + contactNumber,
             email: email,
@@ -229,7 +243,7 @@ const WalkinPage = ({ bike = {} }) => {
                             size="md"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            disabled    
+                            disabled
                         />
                     </Box>
                     <Box flex="1">
