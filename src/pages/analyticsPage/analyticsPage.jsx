@@ -74,6 +74,7 @@ export default function AnalyticsPage() {
         const totalResFee = filteredDataByYear.reduce((sum, item) => sum + parseInt(item.totalReservationFee, 10), 0);
         setTotalReservationFee(totalResFee);
         setTotalRevenue(total);
+        console.log(resData)
     }, [datatype, resData, selYear]);
 
     //forFilter

@@ -6,7 +6,7 @@ const { datalist } = require('framer-motion/m');
 require('dotenv').config();
 const localAPI = 'http://localhost:8917';
 const cloudAPI = 'https://rbms-backend-g216.onrender.com';
-const apiServer = localAPI;
+const apiServer = cloudAPI;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
