@@ -4,12 +4,24 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: './src/assets/images/RBMSlogo.ico',
+    name: 'RBMS',
+    executableName: 'RBMS',
+    win32metadata: {
+      CompanyName: 'LaBaNos Corporation',
+      FileDescription: 'LaBaNos Bicycle Rental Management System',
+      ProductName: 'RBMS',
+    },
+
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        icon: './src/assets/images/RBMSlogo.ico',
+        SetupIcon: './src/assets/images/RBMSlogo.ico',
+      },
     },
     {
       name: '@electron-forge/maker-zip',
