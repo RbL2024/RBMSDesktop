@@ -42,7 +42,7 @@ function makeRentID(length) {
         counter += 1;
     }
     return 'RENTID-' + result;
-  }
+}
 const cta = window.api;
 
 const WalkinPage = ({ bike = {} }) => {
@@ -82,8 +82,16 @@ const WalkinPage = ({ bike = {} }) => {
         setAge('');
         setContactNumber('');
     }
-
+    const isValidEmail = (email) => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)$/;
+        return emailPattern.test(email);
+    };
+    const isValidPhilippinePhoneNumber = (phoneNumber) => {
+        const phonePattern = /^09\d{9}$/; // Starts with 09 and has 11 digits
+        return phonePattern.test(phoneNumber);
+    };
     const handleRent = async () => {
+
         function tempPass(length) {
             let result = '';
             // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -96,6 +104,30 @@ const WalkinPage = ({ bike = {} }) => {
                 counter += 1;
             }
             return result;
+        }
+        // Email validation check
+        if (!isValidEmail(email)) {
+            toast({
+                title: 'Invalid Email',
+                description: 'Please enter a valid email address (Gmail, Yahoo, Outlook, or Hotmail).',
+                status: 'error',
+                duration: 3000,
+                position: 'top',
+                isClosable: true,
+            });
+            return;
+        }
+
+        if (!isValidPhilippinePhoneNumber(contactNumber)) {
+            toast({
+                title: 'Invalid Phone Number',
+                description: 'Please enter a valid Philippine phone number (e.g., 09123456789).',
+                status: 'error',
+                duration: 3000,
+                position: 'top',
+                isClosable: true,
+            });
+            return;
         }
 
         const getcurrentTime = getCurrentTimeInAMPM();

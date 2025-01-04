@@ -3,7 +3,9 @@ import { Box, Text, VStack, HStack } from '@chakra-ui/react';
 import { SlCursor } from 'react-icons/sl';
 import './gpstrackingPage.css';
 
+
 export default function GpstrackingPage() {
+    const [bikeCoords, setBikeCoords] = useState([]);
     // Get current date and time
     const getCurrentDateTime = () => {
         const currentDate = new Date();
@@ -11,59 +13,50 @@ export default function GpstrackingPage() {
         return currentDate.toLocaleDateString("en-US", options);
     };
 
-    const bikeLocations = {
-        "Adult bike - Purple": { lat: 14.732, lng: 121.132, place: "Acacia St. San Jose", number: "BID-2YPX" },
-        "Adult bike - Red": { lat: 14.734, lng: 121.135, place: "Magallanes St. San Juan", number: "BID-ZYPR" },
-        "Japanese bike": { lat: 14.730, lng: 121.140, place: "Luna St. Mandaluyong", number: "BID-YYPR" },
-        "Kid bike - green": { lat: 14.735, lng: 121.137, place: "Tandang Sora Quezon City", number: "BID-XYPR" },
-        "Kid bike - purple": { lat: 14.736, lng: 121.138, place: "Makati Ave. Makati", number: "BID-2QPX" },
-        "Kid bike - blue": { lat: 14.733, lng: 121.134, place: "Quezon Ave. Quezon City", number: "BID-5YPR" },
-    };
 
-    const firstBike = Object.keys(bikeLocations)[0];
-    const defaultLocation = bikeLocations[firstBike];
+    const defaultBike = bikeCoords;
 
-    const [selectedPlace, setSelectedPlace] = useState(defaultLocation.place);
-    const [selectedBike, setSelectedBike] = useState({ name: firstBike, number: defaultLocation.number });
+    const [selectedPlace, setSelectedPlace] = useState(defaultBike.place);
+    const [selectedBike, setSelectedBike] = useState({ number: defaultBike.number });
     const [currentDateTime, setCurrentDateTime] = useState(getCurrentDateTime());
-    const [mapCoordinates, setMapCoordinates] = useState({ lat: defaultLocation.lat, lng: defaultLocation.lng });
+    const [mapCoordinates, setMapCoordinates] = useState({ lat: parseFloat(defaultBike.map((bike) => bike.lat)), lng: parseFloat(defaultBike.map((bike) => bike.lng)) });
 
     const handleBikeClick = (bikeName) => {
-        const location = bikeLocations[bikeName];
+        const location = bikeName;
+
         if (location) {
             setMapCoordinates({ lat: location.lat, lng: location.lng });
             setSelectedPlace(location.place);
-            setSelectedBike({ name: bikeName, number: location.number });
+            setSelectedBike({ number: location.bikeInfo.bike_id });
             setCurrentDateTime(getCurrentDateTime());
         }
     };
 
     useEffect(() => {
         // Initialize the map
+        let map;
+        let marker;
         window.initMap = () => {
             const mapOptions = {
                 center: mapCoordinates,
                 zoom: 19,
             };
-            const map = new window.google.maps.Map(document.getElementById('map'), mapOptions);
+            map = new window.google.maps.Map(document.getElementById('map'), mapOptions);
 
-            const marker = new window.google.maps.Marker({
+            marker = new window.google.maps.Marker({
                 position: mapCoordinates,
                 map: map,
                 title: selectedPlace,
             });
 
-            const infoWindow = new window.google.maps.InfoWindow({
-                content: `<div style="font-size: 14px; color: #333;">${selectedPlace}</div>`,
-            });
-
-            marker.addListener('click', () => {
-                infoWindow.open(map, marker);
-            });
-
-            infoWindow.open(map, marker);
         };
-
+        // Function to update the marker's position
+        const updateMarkerPosition = (newCoordinates) => {
+            if (marker) {
+                marker.setPosition(newCoordinates);
+                map.panTo(newCoordinates); // Optional: Pan the map to the new position
+            }
+        };
         const loadMap = async () => {
             try {
                 await window.api.loadGoogleMaps();
@@ -74,8 +67,28 @@ export default function GpstrackingPage() {
         };
 
         loadMap();
-    }, [mapCoordinates, selectedPlace]);
+    }, [bikeCoords, mapCoordinates, selectedPlace]);
 
+
+
+    useEffect(() => {
+        const getBikeCoords = async () => {
+            try {
+                const response = await window.api.getBikeCoords();
+                if (response) {
+                    setBikeCoords(response);
+                }
+            } catch (error) {
+                console.error('Error getting bike coordinates:', error);
+            }
+        }
+        getBikeCoords();
+
+        const interval = setInterval(() => {
+            getBikeCoords();
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
     return (
         <Box className="gps-tracking-container" display="flex" p={4} flexDirection={{ base: 'column', lg: 'row' }}>
             {/* Left Section */}
@@ -96,7 +109,7 @@ export default function GpstrackingPage() {
                 <Text fontSize="sm" color="#4C4C4C">{currentDateTime}</Text>
 
                 <HStack w="100%" mt={1} align="flex-start">
-                    <SlCursor color="#6E260E"/> {/* Adjusted margin bottom to align at the top */}
+                    {/* <SlCursor color="#6E260E" /> Adjusted margin bottom to align at the top */}
                     <Text fontSize="sm" color="#000000" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap" w="calc(100% - 25px)">
                         {selectedPlace}
                     </Text>
@@ -113,7 +126,7 @@ export default function GpstrackingPage() {
                     maxHeight="380px" // Adjust this to control the height
                     overflowY="auto" // Enable vertical scrolling when the content overflows
                 >
-                    {Object.keys(bikeLocations).map((bike, index) => (
+                    {bikeCoords.map((bike, index) => (
                         <Box
                             key={index}
                             w="100%"
@@ -130,7 +143,7 @@ export default function GpstrackingPage() {
                                 transform: "scale(1.05)",  // Slightly scale the item on hover
                             }}
                         >
-                            {bike}
+                            {bike.bikeInfo.bike_name}
                         </Box>
                     ))}
                 </VStack>

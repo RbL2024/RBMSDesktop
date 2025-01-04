@@ -151,12 +151,12 @@ export default function AvailablityPage() {
                     </Box>
                     <Grid templateColumns='repeat(4, 1fr)' gap={'30px'}>
                         {
-                            fetchedBikes.length === 0 ?
+                            fetchedBikes?.length === 0 ?
                                 <Box display='flex' justifyContent='center' alignItems='center' w='100%' h='100%'>
                                     <Text fontSize={32} >No bikes available</Text>
                                 </Box>
                                 :
-                                fetchedBikes.map((bike) => (
+                                fetchedBikes?.map((bike) => (
                                     <GridItem
                                         key={bike.bike_id}
                                         w='175px'

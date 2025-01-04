@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./dashboardPage.css";
-import { Box, Text, Image, Center, Button } from "@chakra-ui/react";
+import { Box, Text, Image, Center } from "@chakra-ui/react";
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableContainer, useToast } from '@chakra-ui/react';
 import loc from '../../assets/images/dashboard/loc.png';
 import rev from '../../assets/images/dashboard/rev.png';
@@ -8,7 +8,7 @@ import bike from '../../assets/images/dashboard/bike.png';
 import logo from '../../assets/images/dashboard/RBMSlogo.png';
 import { useShared } from '../../contextAPI.jsx';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import chart from '../../assets/images/dashboard/chart.png';
 
 const Card = ({ imageSrc, title, description, cardBgColor, imageBgColor, buttonBgColor, onClick, id }) => {
     return (
@@ -239,24 +239,10 @@ const DashboardPage = () => {
 
                 {/* Monthly Income Chart */}
                 <Box w="50%" h="320px" bg="#A8E6CF" p="10px" rounded="lg" shadow="md" textAlign="center" marginRight={300} marginLeft={100} borderRadius={20} position={'relative'}>
-                    <Text fontSize="lg" fontWeight="bold" mb="10px">Monthly Income</Text>
-                    <ResponsiveContainer width="100%" height="90%">
-                        <LineChart data={incomeData}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="day" />
-                            <YAxis />
-                            <Tooltip />
-                            <Line
-                                type="monotone"
-                                dataKey="income"
-                                stroke="#223A59"
-                                strokeWidth={2}
-                                dot={{ r: 2 }}
-                                animationDuration={1500}  // Duration of the animation
-                                animationEasing="ease-out"  // Easing type for smooth animation
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
+                    <Text fontSize="lg" fontWeight="bold" mt="10px">Monthly Income</Text>
+                    <Box display="flex" justifyContent="center" mb="10px">
+                        <Image src={chart} boxSize="275px" alt="Chart" />
+                    </Box>
                     <Center
                         w='130px'
                         h='40px'

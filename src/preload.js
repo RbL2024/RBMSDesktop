@@ -45,6 +45,7 @@ contextBridge.exposeInMainWorld("api", {
   saveTempRent:(walkinInfo, walkinRentInfo) => ipcRenderer.invoke("create-temp-acc-and-insert-rent", walkinInfo, walkinRentInfo),
   getResData:()=>ipcRenderer.invoke("get-reservation-data"),
   getRentData:()=>ipcRenderer.invoke("get-rented-data"),
+  getBikeCoords:() => ipcRenderer.invoke("get-bike-coords"),
 });
 
 ipcRenderer.on("account-found", (event, response) => {

@@ -32,7 +32,8 @@ const createWindow = () => {
     autoHideMenuBar: true,
     frame: false,
     resizable: false,
-    maximizable: false
+    maximizable: false,
+    
   });
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
@@ -44,6 +45,7 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+
 app.whenReady().then(() => {
   createWindow();
 
@@ -340,5 +342,13 @@ ipcMain.handle('get-rented-data', async (event, data) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching rent data:', error);
+  }
+});
+ipcMain.handle('get-bike-coords', async (event, data) => {
+  try {
+    const response = await axios.get(`${apiServer}/bikeCoords`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching bike coords:', error);
   }
 });

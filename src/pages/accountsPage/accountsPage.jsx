@@ -33,9 +33,8 @@ export default function UserPage() {
             const url = 'https://rbms-backend-g216.onrender.com/fetchUserAccounts'
             const res = await fetchAdminAcc.fetchData(url);
             setFetchedData(res);
-            console.log(res);
         } catch (error) {
-            console.error('Error fetching data:', err);
+            console.error('Error fetching data:', error);
         }
         setLoading(false);
     }
@@ -43,6 +42,7 @@ export default function UserPage() {
     const fetchAdmins = async () => {
         setLoading(true);
         try {
+            // const url = 'http://localhost:8917/fetchAdminAccounts'
             const url = 'https://rbms-backend-g216.onrender.com/fetchAdminAccounts'
             const res = await fetchAdminAcc.fetchData(url);
             setFetchedData(res);
