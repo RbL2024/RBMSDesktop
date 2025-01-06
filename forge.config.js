@@ -4,8 +4,9 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
-    icon: './src/assets/images/RBMSlogo.ico',
+    icon: './src/assets/images/RBMSlogo',
     name: 'RBMS',
+    authors: 'LaBaNos Team',
     executableName: 'RBMS',
     win32metadata: {
       CompanyName: 'LaBaNos Corporation',
@@ -19,8 +20,7 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        icon: './src/assets/images/RBMSlogo.ico',
-        SetupIcon: './src/assets/images/RBMSlogo.ico',
+        setupIcon: './src/assets/images/RBMSlogo.ico',
       },
     },
     {
