@@ -69,25 +69,21 @@ export default function GpstrackingPage() {
         loadMap();
     }, [bikeCoords, mapCoordinates, selectedPlace]);
 
+    const getBikeCoords = async () => {
+        try {
+            const response = await window.api.getBikeCoords();
+            if (response) {
+                setBikeCoords(response);
+            }
+        } catch (error) {
+            console.error('Error getting bike coordinates:', error);
+        }
+    }
 
 
     useEffect(() => {
-        const getBikeCoords = async () => {
-            try {
-                const response = await window.api.getBikeCoords();
-                if (response) {
-                    setBikeCoords(response);
-                }
-            } catch (error) {
-                console.error('Error getting bike coordinates:', error);
-            }
-        }
+        
         getBikeCoords();
-
-        const interval = setInterval(() => {
-            getBikeCoords();
-        }, 5000);
-        return () => clearInterval(interval);
     }, []);
     return (
         <Box className="gps-tracking-container" display="flex" p={4} flexDirection={{ base: 'column', lg: 'row' }}>
